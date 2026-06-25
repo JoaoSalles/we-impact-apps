@@ -1,0 +1,10 @@
+{
+  "name": "@we-impact/we-impact-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "implicitDependencies": [
+      "@we-impact/we-impact"
+    ]
+  }
+}
