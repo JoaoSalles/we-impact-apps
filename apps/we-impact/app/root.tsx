@@ -9,6 +9,7 @@ import {
 } from "react-router";
 
 import { AppNav } from './app-nav'
+import { SessionProvider } from './auth/session-context'
 
 export const meta: MetaFunction = () => ([{
   title: "New Nx React Router App",
@@ -37,8 +38,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <AppNav />
-        {children}
+        <SessionProvider>
+          <AppNav />
+          {children}
+        </SessionProvider>
         <ScrollRestoration />
         <Scripts />
       </body>

@@ -21,24 +21,13 @@ const AuthApp = lazy(() =>
   loadRemoteModule<{ default: ComponentType<AuthAppProps> }>('auth/AuthApp'),
 );
 
-export function AuthWidget() {
-  const validateURL = import.meta.env.VITE_VALIDATE_CREDENTIAL ?? '';
+// The widget no longer talks to the backend itself — it forwards the Google
+// result up via onAuthenticated. The `validate` call lives in auth-api.ts and
+// is invoked by the session layer's signIn (see app/auth/session-context.tsx).
+export function AuthWidget({ onAuthenticated }: AuthAppProps) {
   return (
     <Suspense fallback={<p>Loading sign-in…</p>}>
-      <AuthApp
-        onAuthenticated={async (result) => {
-          // Send the Google-signed ID token to YOUR backend. The backend must
-          // verify the JWT signature (Google's public keys) + aud/iss/exp,
-          // then issue its own session. Do NOT trust result.profile here.
-            const credentials = await fetch(validateURL, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ credential: result.credential }),
-            });
-          console.log('google id token (send to backend):', result);
-          console.log('return from backend:', credentials);
-        }}
-      />
+      <AuthApp onAuthenticated={onAuthenticated} />
     </Suspense>
   );
 }
