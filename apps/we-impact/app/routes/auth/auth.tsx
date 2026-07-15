@@ -1,5 +1,5 @@
 import { lazy, Suspense, type ComponentType } from 'react';
-import { loadRemoteModule } from './mf-runtime';
+import { loadRemoteModule } from '../../mf-runtime';
 
 // Mirrors AuthResult exposed by apps/auth/src/auth/types.ts.
 export interface AuthResult {
@@ -24,7 +24,7 @@ const AuthApp = lazy(() =>
 // The widget no longer talks to the backend itself — it forwards the Google
 // result up via onAuthenticated. The `validate` call lives in auth-api.ts and
 // is invoked by the session layer's signIn (see app/auth/session-context.tsx).
-export function AuthWidget({ onAuthenticated }: AuthAppProps) {
+export default function AuthComponent({ onAuthenticated }: AuthAppProps) {
   return (
     <Suspense fallback={<p>Loading sign-in…</p>}>
       <AuthApp onAuthenticated={onAuthenticated} />

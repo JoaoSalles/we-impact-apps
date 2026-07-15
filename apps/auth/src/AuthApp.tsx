@@ -38,7 +38,7 @@ function ProviderSlot({
 }
 
 /**
- * The federated auth widget. Lists sign-in providers (Google first) and runs
+ * The federated auth widget. Lists sign-in providers and runs
  * each provider's client-side flow in the browser. Exposed to the host via
  * Module Federation as `auth/AuthApp`.
  */

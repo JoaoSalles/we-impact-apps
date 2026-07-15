@@ -1,10 +1,17 @@
 /// <reference types='vitest' />
 import { defineConfig } from 'vite';
 import { reactRouter } from '@react-router/dev/vite';
+import tailwindcss from '@tailwindcss/vite';
+import { join } from 'node:path';
 
 export default defineConfig(() => ({
   root: import.meta.dirname,
   cacheDir: '../../node_modules/.vite/apps/we-impact',
+  resolve: {
+    alias: {
+      '@': join(import.meta.dirname, 'app'),
+    },
+  },
   server:{
     port: 4200,
     host: 'localhost',
@@ -28,7 +35,7 @@ export default defineConfig(() => ({
     port: 4300,
     host: 'localhost',
   },
-  plugins: [!process.env.VITEST && reactRouter()],
+  plugins: [!process.env.VITEST && reactRouter(), tailwindcss()],
   // Uncomment this if you are using workers.
   // worker: {
   //  plugins: [],

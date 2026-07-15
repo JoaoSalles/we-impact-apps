@@ -65,18 +65,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  // If the token is cleared from outside React (apiFetch's failed refresh),
-  // drop to anonymous and forget the profile.
-  useEffect(
-    () =>
-      subscribe(() => {
-        if (getAccessToken() === null) {
-          setStatus('anonymous');
-          setProfile(undefined);
-        }
-      }),
-    [],
-  );
+  // React to external token clears (e.g. apiFetch dropping the token after a
+  // failed refresh): once the token is gone, fall back to anonymous.
+  useEffect(() => {
+    return subscribe(() => {
+      if (getAccessToken() === null) {
+        setProfile(undefined);
+        setStatus('anonymous');
+      }
+    });
+  }, []);
 
   const value = useMemo<SessionContextValue>(
     () => ({

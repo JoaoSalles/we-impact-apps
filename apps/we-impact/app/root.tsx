@@ -1,21 +1,23 @@
 import {
   Links,
   Meta,
-  Outlet,
   Scripts,
   ScrollRestoration,
   type MetaFunction, 
   type LinksFunction
 } from "react-router";
 
-import { AppNav } from './app-nav'
 import { SessionProvider } from './auth/session-context'
+import { RequireAuth } from './auth/require-auth'
+import { RootLayout } from './layouts/RootLayout'
+import appStylesHref from './app.css?url'
 
 export const meta: MetaFunction = () => ([{
   title: "New Nx React Router App",
 }]);
 
 export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: appStylesHref },
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
     rel: "preconnect",
@@ -39,7 +41,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <SessionProvider>
-          <AppNav />
           {children}
         </SessionProvider>
         <ScrollRestoration />
@@ -50,5 +51,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-    return <Outlet />;
+    return (
+      <RequireAuth>
+        <RootLayout />
+      </RequireAuth>
+    );
 }

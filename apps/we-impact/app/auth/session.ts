@@ -1,16 +1,10 @@
-// In-memory access-token store. Source of truth for "is there a token".
-//
-// The access token is deliberately kept ONLY in this module-level variable —
-// never in document.cookie or localStorage — so it is not readable by XSS and
-// is gone after a reload (the session is restored via /refresh). See
-// docs/superpowers/specs/2026-06-25-hybrid-session-auth-design.md.
-
 let accessToken: string | null = null;
 
-const listeners = new Set<() => void>();
+type Listener = () => void;
+const listeners = new Set<Listener>();
 
 function notify(): void {
-  for (const listener of listeners) listener();
+  listeners.forEach((listener) => listener());
 }
 
 // expiresIn is accepted for forward-compatibility with proactive refresh, but
@@ -29,8 +23,13 @@ export function clearAccessToken(): void {
   notify();
 }
 
-/** Listeners fire on every set/clear so non-React code can notify the UI. */
-export function subscribe(listener: () => void): () => void {
+// Subscribe to token changes. Lets the React layer (SessionProvider) react to
+// external clears — e.g. apiFetch dropping the token after a failed refresh —
+// and fall back to anonymous. Returns an unsubscribe function.
+export function subscribe(listener: Listener): () => void {
   listeners.add(listener);
-  return () => listeners.delete(listener);
+  return () => {
+    listeners.delete(listener);
+  };
 }
+
