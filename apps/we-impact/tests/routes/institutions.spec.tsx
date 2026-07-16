@@ -17,10 +17,10 @@ test('renders both tab triggers', () => {
   expect(screen.getByRole('tab', { name: 'List' })).toBeTruthy();
 });
 
-test('defaults to the Creation tab when no tab param is present', () => {
+test('defaults to the List tab when no tab param is present', () => {
   renderAt('/institutions');
   expect(
-    screen.getByRole('tab', { name: 'Creation' }).getAttribute('aria-selected'),
+    screen.getByRole('tab', { name: 'List' }).getAttribute('aria-selected'),
   ).toBe('true');
 });
 
