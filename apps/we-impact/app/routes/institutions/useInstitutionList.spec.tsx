@@ -1,6 +1,7 @@
 import { renderHook, waitFor, act } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { MemoryRouter } from "react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { useInstitutionList } from "./useInstitutionList";
@@ -23,7 +24,14 @@ function page(overrides = {}) {
 }
 
 function wrapper({ children }: { children: ReactNode }) {
-  return <MemoryRouter initialEntries={["/institutions?tab=list"]}>{children}</MemoryRouter>;
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return (
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter initialEntries={["/institutions?tab=list"]}>{children}</MemoryRouter>
+    </QueryClientProvider>
+  );
 }
 
 describe("useInstitutionList", () => {

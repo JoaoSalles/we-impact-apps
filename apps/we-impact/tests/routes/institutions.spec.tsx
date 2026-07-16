@@ -1,13 +1,30 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { vi } from 'vitest';
 import InstitutionsComponent from '../../app/routes/institutions/Institutions';
 
+vi.mock('../../app/api/institution-api', () => ({
+  listInstitutions: vi.fn().mockResolvedValue({
+    items: [],
+    pageNumber: 0,
+    pageSize: 20,
+    hasNext: false,
+  }),
+  createInstitution: vi.fn(),
+}));
+
 function renderAt(path: string) {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
   return render(
-    <MemoryRouter initialEntries={[path]}>
-      <InstitutionsComponent />
-    </MemoryRouter>,
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter initialEntries={[path]}>
+        <InstitutionsComponent />
+      </MemoryRouter>
+    </QueryClientProvider>,
   );
 }
 
@@ -33,9 +50,10 @@ test('?tab=list selects the List tab', () => {
 
 test('both panels stay mounted so their state is preserved (forceMount)', () => {
   renderAt('/institutions?tab=list');
-  // getByText finds elements even when Radix marks the inactive panel hidden
+  // Both queries find elements even when Radix marks the inactive panel hidden:
+  // "Create institution" is unique to the create panel, the Next button to the list panel.
   expect(screen.getByText('Create institution')).toBeTruthy();
-  expect(screen.getByText('Institutions list')).toBeTruthy();
+  expect(screen.getByRole('button', { name: /next/i })).toBeTruthy();
 });
 
 test('clicking a trigger switches the active tab', async () => {

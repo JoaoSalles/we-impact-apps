@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { InstitutionsList } from "./InstitutionsList";
@@ -23,10 +24,15 @@ function page(overrides = {}) {
 }
 
 function renderList() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
   return render(
-    <MemoryRouter initialEntries={["/institutions?tab=list"]}>
-      <InstitutionsList />
-    </MemoryRouter>,
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter initialEntries={["/institutions?tab=list"]}>
+        <InstitutionsList />
+      </MemoryRouter>
+    </QueryClientProvider>,
   );
 }
 
@@ -48,7 +54,7 @@ describe("InstitutionsList", () => {
     renderList();
 
     await screen.findByText("Acme");
-    await user.type(screen.getByLabelText("Name"), "Acm");
+    await user.type(screen.getByLabelText(/name/i), "Acm");
 
     await waitFor(() =>
       expect(mockedList).toHaveBeenLastCalledWith(

@@ -1,18 +1,9 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
-import {
-  listInstitutions,
-  type InstitutionPage,
-} from "@/api/institution-api";
+import { listInstitutions } from "@/api/institution-api";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
-
-const EMPTY_PAGE: InstitutionPage = {
-  items: [],
-  pageNumber: 0,
-  pageSize: 20,
-  hasNext: false,
-};
 
 function setOrDelete(params: URLSearchParams, key: string, value: string) {
   if (value.trim()) params.set(key, value.trim());
@@ -26,10 +17,6 @@ export function useInstitutionList() {
   const [city, setCityState] = useState(() => searchParams.get("city") ?? "");
   const [state, setStateState] = useState(() => searchParams.get("state") ?? "");
   const [page, setPage] = useState(() => Number(searchParams.get("page") ?? "0"));
-
-  const [data, setData] = useState<InstitutionPage>(EMPTY_PAGE);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const debouncedName = useDebouncedValue(name);
   const debouncedCity = useDebouncedValue(city);
@@ -50,32 +37,21 @@ export function useInstitutionList() {
     );
   }, [debouncedName, debouncedCity, debouncedState, page, setSearchParams]);
 
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setError(null);
-
-    listInstitutions({
-      name: debouncedName,
-      city: debouncedCity,
-      state: debouncedState,
-      pageNumber: page,
-    })
-      .then((res) => {
-        if (!cancelled) setData(res);
-      })
-      .catch((err) => {
-        if (cancelled) return;
-        setError(err instanceof Error ? err.message : "Failed to load institutions");
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [debouncedName, debouncedCity, debouncedState, page]);
+  const query = useQuery({
+    queryKey: [
+      "institutions",
+      { name: debouncedName, city: debouncedCity, state: debouncedState, page },
+    ],
+    queryFn: () =>
+      listInstitutions({
+        name: debouncedName,
+        city: debouncedCity,
+        state: debouncedState,
+        pageNumber: page,
+      }),
+    // Keep the previous page's rows visible while the next page loads.
+    placeholderData: keepPreviousData,
+  });
 
   function makeFilterSetter(setter: (v: string) => void) {
     return (value: string) => {
@@ -85,11 +61,15 @@ export function useInstitutionList() {
   }
 
   return {
-    items: data.items,
-    hasNext: data.hasNext,
+    items: query.data?.items ?? [],
+    hasNext: query.data?.hasNext ?? false,
     pageNumber: page,
-    loading,
-    error,
+    loading: query.isPending,
+    error: query.error
+      ? query.error instanceof Error
+        ? query.error.message
+        : "Failed to load institutions"
+      : null,
     filters: { name, city, state },
     setName: makeFilterSetter(setNameState),
     setCity: makeFilterSetter(setCityState),

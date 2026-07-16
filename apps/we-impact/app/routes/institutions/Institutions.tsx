@@ -58,7 +58,7 @@ export default function InstitutionsComponent() {
         </TabsContent>
 
         <TabsContent value="list" forceMount>
-          <h2 className="mb-4 text-lg font-medium">Institutions list</h2>
+          <h2 className="mb-4 text-lg font-medium">Institutions</h2>
           <InstitutionsList />
         </TabsContent>
       </Tabs>

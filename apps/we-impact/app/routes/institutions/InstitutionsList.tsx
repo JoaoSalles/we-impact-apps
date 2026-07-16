@@ -25,7 +25,7 @@ export function InstitutionsList() {
     <div className="space-y-4">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="space-y-1.5">
-          <Label htmlFor="filter-name">Name</Label>
+          <Label htmlFor="filter-name">Name:</Label>
           <Input
             id="filter-name"
             placeholder="Name"
@@ -34,7 +34,7 @@ export function InstitutionsList() {
           />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="filter-city">City</Label>
+          <Label htmlFor="filter-city">City:</Label>
           <Input
             id="filter-city"
             placeholder="City"
@@ -43,7 +43,7 @@ export function InstitutionsList() {
           />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="filter-state">State</Label>
+          <Label htmlFor="filter-state">State:</Label>
           <Input
             id="filter-state"
             placeholder="State"
