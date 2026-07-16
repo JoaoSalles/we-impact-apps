@@ -7,11 +7,13 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs";
+import { InstitutionForm } from "@/components/institutionForm/institutionForm";
+import { useInstitutions } from "./useInstitutions";
 
 const TABS = ["create", "list"] as const;
 type InstitutionsTab = (typeof TABS)[number];
 
-const DEFAULT_TAB: InstitutionsTab = "create";
+const DEFAULT_TAB: InstitutionsTab = "list";
 
 function isInstitutionsTab(value: string | null): value is InstitutionsTab {
   return value !== null && (TABS as readonly string[]).includes(value);
@@ -23,6 +25,8 @@ export default function InstitutionsComponent() {
   const activeTab: InstitutionsTab = isInstitutionsTab(param)
     ? param
     : DEFAULT_TAB;
+
+  const { handleCreateInstitution } = useInstitutions();
 
   const handleTabChange = useCallback(
     (value: string) => {
@@ -43,13 +47,13 @@ export default function InstitutionsComponent() {
 
       <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-4">
         <TabsList>
-          <TabsTrigger value="create">Creation</TabsTrigger>
           <TabsTrigger value="list">List</TabsTrigger>
+          <TabsTrigger value="create">Creation</TabsTrigger>
         </TabsList>
 
         <TabsContent value="create" forceMount>
           <h2 className="text-lg font-medium">Create institution</h2>
-          <p className="text-muted-foreground">Creation form coming soon.</p>
+          <InstitutionForm onSubmit={handleCreateInstitution} />
         </TabsContent>
 
         <TabsContent value="list" forceMount>

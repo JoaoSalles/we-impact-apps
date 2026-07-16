@@ -16,7 +16,7 @@ import {
   getAccessToken,
   subscribe,
 } from './session';
-import { validate, refresh, logout, userMe } from './auth-api';
+import { validate, refresh, logout, userMe } from '../api/auth-api';
 
 export type SessionStatus = 'loading' | 'authenticated' | 'anonymous';
 

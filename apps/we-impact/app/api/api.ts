@@ -5,7 +5,7 @@
 // request once; if the refresh fails it clears the token (dropping the UI to
 // anonymous) and returns the 401. No timers — refresh is reactive to 401 only.
 
-import { getAccessToken, setAccessToken, clearAccessToken } from './session';
+import { getAccessToken, setAccessToken, clearAccessToken } from '../auth/session';
 import { refresh } from './auth-api';
 
 function withAuth(init: RequestInit): RequestInit {

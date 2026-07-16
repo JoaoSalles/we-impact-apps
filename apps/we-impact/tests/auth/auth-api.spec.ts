@@ -1,4 +1,4 @@
-import { validate, refresh, logout } from '../../app/auth/auth-api';
+import { validate, refresh, logout } from '../../app/api/auth-api';
 
 beforeEach(() => {
   vi.stubEnv('VITE_AUTH_API', 'http://api.test');

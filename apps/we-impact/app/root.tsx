@@ -10,10 +10,11 @@ import {
 import { SessionProvider } from './auth/session-context'
 import { RequireAuth } from './auth/require-auth'
 import { RootLayout } from './layouts/RootLayout'
+import { Toaster } from './components/ui/sonner'
 import appStylesHref from './app.css?url'
 
 export const meta: MetaFunction = () => ([{
-  title: "New Nx React Router App",
+  title: "We Impact",
 }]);
 
 export const links: LinksFunction = () => [
@@ -43,6 +44,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <SessionProvider>
           {children}
         </SessionProvider>
+        <Toaster richColors />
         <ScrollRestoration />
         <Scripts />
       </body>

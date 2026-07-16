@@ -1,30 +1,131 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is(.dark, .dark *));
 
+/* ============================================================
+   Design tokens
+
+   Every color is declared once as light-dark(<light>, <dark>).
+   The theme follows the OS setting automatically (via
+   `color-scheme`). To force a mode, add a `.light` or `.dark`
+   class on <html> — `color-scheme` inherits, so the whole
+   subtree flips with it.
+   ============================================================ */
+:root {
+  color-scheme: light dark;
+
+  /* ---- Surfaces & text ---- */
+  --background: light-dark(#ffffff, #1c1c1c);
+  --foreground: light-dark(#08060d, #f3f4f6);
+  --bg-base: light-dark(#ffffff, #111111); /* page behind surfaces */
+  --popover: light-dark(#ffffff, #1c1c1c);
+  --popover-foreground: light-dark(#08060d, #f3f4f6);
+  --muted: light-dark(#f4f3ec, #1f2028);
+  --muted-foreground: light-dark(#6b6375, #9ca3af);
+
+  /* ---- Primary (monochrome; flips light/dark for contrast) ---- */
+  --primary: light-dark(#1c1c1c, #f3f4f6);
+  --primary-foreground: light-dark(#ffffff, #1c1c1c);
+
+  /* ---- Secondary ---- */
+  --secondary: light-dark(#f4f3ec, #2e303a);
+  --secondary-foreground: light-dark(#08060d, #f3f4f6);
+
+  /* ---- Accent (subtle hover surfaces) ---- */
+  --accent: light-dark(#f4f3ec, #2e303a);
+  --accent-foreground: light-dark(#08060d, #f3f4f6);
+  --accent-custom: light-dark(rgba(28, 28, 28, 0.06), rgba(255, 255, 255, 0.08));
+  --accent-custom-foreground: light-dark(#08060d, #f3f4f6);
+
+  /* ---- Destructive ---- */
+  --destructive: light-dark(#dc2626, #ef4444);
+  --destructive-foreground: #ffffff;
+
+  /* ---- Lines, inputs, focus ---- */
+  --border: light-dark(#e5e4e7, #2e303a);
+  --input: light-dark(#e5e4e7, #2e303a);
+  --ring: light-dark(#1c1c1c, #f3f4f6);
+
+  /* ---- Inverse selection (active nav item) ---- */
+  --background-selected: light-dark(#1c1c1c, #ffffff);
+
+  /* ---- Sidebar ---- */
+  --sidebar: light-dark(#ffffff, #18181b);
+  --sidebar-foreground: light-dark(#08060d, #f4f4f5);
+  --sidebar-primary: light-dark(#1c1c1c, #ffffff);
+  --sidebar-primary-foreground: light-dark(#ffffff, #08060d);
+  --sidebar-accent: light-dark(rgba(28, 28, 28, 0.05), #26262b);
+  --sidebar-accent-foreground: light-dark(#08060d, #f4f4f5);
+  --sidebar-border: light-dark(#e5e4e7, #26262b);
+  --sidebar-ring: light-dark(#1c1c1c, #f4f4f5);
+
+  /* ---- Aliases kept for direct var() use in components ---- */
+  --text: var(--muted-foreground); /* AppSidebar.tsx */
+  --text-h: var(--foreground); /* AppSidebar.tsx + headings */
+
+  /* ---- Elevation ---- */
+  --shadow: light-dark(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)) 0 10px 15px -3px,
+    light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.25)) 0 4px 6px -2px;
+  --shadow-card: 0 1px 2px 0 light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.2));
+
+  /* ---- Motion ---- */
+  --motion-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-out-fast: cubic-bezier(0, 0, 0.2, 1);
+
+  /* ---- Typography ---- */
+  --sans: "Inter", system-ui, sans-serif;
+  --heading: "Inter", system-ui, sans-serif;
+}
+
+/* Force a single mode regardless of the OS setting. */
+.light {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+/* ============================================================
+   Tailwind theme mapping (utility class -> token)
+   ============================================================ */
 @theme inline {
-  --color-background: var(--bg-surface);
-  --color-foreground: var(--text-h);
-  --color-background-selected: var(--bg-surface-selected);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-custom: var(--accent-custom);
+  --color-accent-custom-foreground: var(--accent-custom-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
   --color-border: var(--border);
-  --color-input: var(--border);
-  --color-ring: var(--accent);
-  --color-popover: var(--bg-surface);
-  --color-popover-foreground: var(--text-h);
-  --color-primary: var(--accent);
-  --color-primary-foreground: var(--bg-base);
-  --color-muted: var(--bg-surface);
-  --color-muted-foreground: var(--text);
-  --color-accent-custom: var(--accent-bg);
-  --color-accent-foreground: var(--text-h);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-background-selected: var(--background-selected);
+
   --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Custom breakpoint: `xs:*` applies at >=420px, `max-xs:*` below 420px. */
+  --breakpoint-xs: 420px;
 
   --spacing-xs: 4px;
   --spacing-sm: 8px;
@@ -38,74 +139,9 @@
   --shadow-float: var(--shadow);
 }
 
-:root {
-  /* neutrals */
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg-base: #ffffff;
-  --bg-surface: #ffffff;
-  --bg-surface-selected: #1c1c1c;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-
-  /* accent */
-  --accent: #1c1c1c;
-  --accent-bg: rgba(28, 28, 28, 0.1);
-  --accent-border: rgba(28, 28, 28, 0.5);
-
-  /* elevation */
-  --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-  --shadow-card: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-
-  /* motion */
-  --motion-standard: cubic-bezier(0.4, 0, 0.2, 1);
-  --motion-out-fast: cubic-bezier(0, 0, 0.2, 1);
-
-  /* sidebar — light mode */
-  --sidebar: #ffffff;
-  --sidebar-foreground: #08060d;
-  --sidebar-primary: #1c1c1c;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: rgba(28, 28, 28, 0.05);
-  --sidebar-accent-foreground: #08060d;
-  --sidebar-border: #e5e4e7;
-  --sidebar-ring: #1c1c1c;
-
-  --sans: 'Inter', system-ui, sans-serif;
-  --heading: 'Inter', system-ui, sans-serif;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg-base);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg-base: #111111;
-    --bg-surface: #1c1c1c;
-    --bg-surface-selected: #ffffff;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #1c1c1c;
-    --accent-bg: rgba(0, 0, 0, 0.15);
-    --accent-border: rgba(28, 28, 28, 0.5);
-    --shadow: rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-    --shadow-card: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-  }
-}
-
+/* ============================================================
+   Base element styles
+   ============================================================ */
 html,
 body {
   height: 100%;
@@ -113,23 +149,25 @@ body {
 
 body {
   margin: 0;
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color: var(--muted-foreground);
+  background: var(--bg-base);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (max-width: 1024px) {
+  body {
+    font-size: 16px;
+  }
 }
 
 h1,
 h2 {
   font-family: var(--heading);
   font-weight: 500;
-  color: var(--text-h);
-}
-
-/* sidebar — dark mode (class-based for shadcn sidebar component) */
-.dark {
-  --sidebar: hsl(240 5.9% 10%);
-  --sidebar-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-primary: #ffffff;
-  --sidebar-primary-foreground: #08060d;
-  --sidebar-accent: hsl(240 3.7% 15.9%);
-  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-border: hsl(240 3.7% 15.9%);
-  --sidebar-ring: hsl(240 4.8% 95.9%);
+  color: var(--foreground);
 }

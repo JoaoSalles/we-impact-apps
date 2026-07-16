@@ -1,4 +1,4 @@
-import { apiFetch } from '../../app/auth/api';
+import { apiFetch } from '../../app/api/api';
 import {
   setAccessToken,
   getAccessToken,
