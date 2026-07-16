@@ -4,12 +4,11 @@ import { MemoryRouter } from "react-router";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { useInstitutionList } from "./useInstitutionList";
+import { listInstitutions } from "@/api/institution-api";
 
 vi.mock("@/api/institution-api", () => ({
   listInstitutions: vi.fn(),
 }));
-
-import { listInstitutions } from "@/api/institution-api";
 
 const mockedList = vi.mocked(listInstitutions);
 

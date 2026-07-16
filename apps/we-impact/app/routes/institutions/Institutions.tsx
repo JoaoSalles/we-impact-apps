@@ -7,7 +7,8 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs";
-import { InstitutionForm } from "@/components/institutionForm/institutionForm";
+import { InstitutionForm } from "@/components/institutionForm/InstitutionForm";
+import { InstitutionsList } from "./InstitutionsList";
 import { useInstitutions } from "./useInstitutions";
 
 const TABS = ["create", "list"] as const;
@@ -57,8 +58,8 @@ export default function InstitutionsComponent() {
         </TabsContent>
 
         <TabsContent value="list" forceMount>
-          <h2 className="text-lg font-medium">Institutions list</h2>
-          <p className="text-muted-foreground">Institutions list coming soon.</p>
+          <h2 className="mb-4 text-lg font-medium">Institutions list</h2>
+          <InstitutionsList />
         </TabsContent>
       </Tabs>
     </div>

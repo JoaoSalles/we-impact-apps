@@ -1,12 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { listInstitutions } from "./institution-api";
+import { apiFetch } from "./api";
 
 vi.mock("./api", () => ({
   apiFetch: vi.fn(),
 }));
-
-import { apiFetch } from "./api";
 
 const mockedFetch = vi.mocked(apiFetch);
 
