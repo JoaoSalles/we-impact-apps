@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataTable } from "@/components/dataTable/DataTable";
 
@@ -22,28 +23,34 @@ export function InstitutionsList() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-2">
-        <Input
-          aria-label="Name"
-          placeholder="Name"
-          value={filters.name}
-          onChange={(event) => setName(event.target.value)}
-          className="max-w-xs"
-        />
-        <Input
-          aria-label="City"
-          placeholder="City"
-          value={filters.city}
-          onChange={(event) => setCity(event.target.value)}
-          className="max-w-xs"
-        />
-        <Input
-          aria-label="State"
-          placeholder="State"
-          value={filters.state}
-          onChange={(event) => setState(event.target.value)}
-          className="max-w-xs"
-        />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="space-y-1.5">
+          <Label htmlFor="filter-name">Name</Label>
+          <Input
+            id="filter-name"
+            placeholder="Name"
+            value={filters.name}
+            onChange={(event) => setName(event.target.value)}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="filter-city">City</Label>
+          <Input
+            id="filter-city"
+            placeholder="City"
+            value={filters.city}
+            onChange={(event) => setCity(event.target.value)}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="filter-state">State</Label>
+          <Input
+            id="filter-state"
+            placeholder="State"
+            value={filters.state}
+            onChange={(event) => setState(event.target.value)}
+          />
+        </div>
       </div>
 
       {error ? (
