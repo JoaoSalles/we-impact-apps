@@ -7,7 +7,7 @@ import { DataTable } from "@/components/dataTable/DataTable";
 import { institutionColumns } from "./columns";
 import { useInstitutionList } from "./useInstitutionList";
 
-export function InstitutionsList() {
+export function InstitutionList() {
   const {
     items,
     hasNext,

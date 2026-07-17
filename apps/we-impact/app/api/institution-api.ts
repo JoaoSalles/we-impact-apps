@@ -34,6 +34,12 @@ export interface InstitutionPage {
   hasNext: boolean;
 }
 
+/** A single institution's full details, including fields omitted from the list. */
+export interface InstitutionDetail extends Institution {
+  postalCode: string;
+  walletAccountIds: string[];
+}
+
 const registerURL = () => import.meta.env.VITE_REGISTER_API ?? '';
 
 /**
@@ -78,4 +84,32 @@ export async function listInstitutions(
     throw new Error(`listInstitutions failed: ${response.status}`);
   }
   return (await response.json()) as InstitutionPage;
+}
+
+/** Fetch a single institution's full details by id. */
+export async function getInstitution(id: string): Promise<InstitutionDetail> {
+  const response = await apiFetch(`${registerURL()}/institutions/${id}`, {
+    method: 'GET',
+    credentials: 'include',
+  });
+  if (!response.ok) {
+    throw new Error(`getInstitution failed: ${response.status}`);
+  }
+  return (await response.json()) as InstitutionDetail;
+}
+
+/** Update an existing institution's details by id. */
+export async function updateInstitution(
+  id: string,
+  body: InstitutionFormValues,
+): Promise<void> {
+  const response = await apiFetch(`${registerURL()}/institutions/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    throw new Error(`updateInstitution failed: ${response.status}`);
+  }
 }

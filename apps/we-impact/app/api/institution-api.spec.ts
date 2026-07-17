@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { listInstitutions } from "./institution-api";
+import { getInstitution, listInstitutions, updateInstitution } from "./institution-api";
 import { apiFetch } from "./api";
 
 vi.mock("./api", () => ({
@@ -55,5 +55,83 @@ describe("listInstitutions", () => {
     mockedFetch.mockResolvedValue({ ok: false, status: 500 } as Response);
 
     await expect(listInstitutions()).rejects.toThrow("500");
+  });
+});
+
+describe("getInstitution", () => {
+  afterEach(() => vi.clearAllMocks());
+
+  function detailResponse() {
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({
+        id: "abc",
+        name: "Acme",
+        type: "NGO",
+        street: "1 Main St",
+        city: "Rio",
+        state: "RJ",
+        postalCode: "20000-000",
+        walletAccountIds: ["w1", "w2"],
+      }),
+    } as unknown as Response;
+  }
+
+  it("GETs the institution by id with credentials and returns its details", async () => {
+    mockedFetch.mockResolvedValue(detailResponse());
+
+    const institution = await getInstitution("abc");
+
+    const url = new URL(String(mockedFetch.mock.calls[0][0]), "http://test.local");
+    expect(url.pathname.endsWith("/abc")).toBe(true);
+    expect(mockedFetch.mock.calls[0][1]).toMatchObject({
+      method: "GET",
+      credentials: "include",
+    });
+    expect(institution).toMatchObject({
+      id: "abc",
+      postalCode: "20000-000",
+      walletAccountIds: ["w1", "w2"],
+    });
+  });
+
+  it("throws when the response is not ok", async () => {
+    mockedFetch.mockResolvedValue({ ok: false, status: 404 } as Response);
+
+    await expect(getInstitution("missing")).rejects.toThrow("404");
+  });
+});
+
+describe("updateInstitution", () => {
+  afterEach(() => vi.clearAllMocks());
+
+  function okResponse() {
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({}),
+    } as unknown as Response;
+  }
+
+  it("PUTs the values to the institution by id as JSON with credentials", async () => {
+    mockedFetch.mockResolvedValue(okResponse());
+
+    await updateInstitution("abc", { name: "Acme", city: "Rio" });
+
+    const url = new URL(String(mockedFetch.mock.calls[0][0]), "http://test.local");
+    expect(url.pathname.endsWith("/institutions/abc")).toBe(true);
+    const init = mockedFetch.mock.calls[0][1];
+    expect(init).toMatchObject({
+      method: "PUT",
+      credentials: "include",
+    });
+    expect(JSON.parse(String(init?.body))).toEqual({ name: "Acme", city: "Rio" });
+  });
+
+  it("throws when the response is not ok", async () => {
+    mockedFetch.mockResolvedValue({ ok: false, status: 400 } as Response);
+
+    await expect(updateInstitution("abc", { name: "Acme" })).rejects.toThrow("400");
   });
 });

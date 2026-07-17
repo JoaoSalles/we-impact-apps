@@ -8,7 +8,7 @@ import {
   TabsContent,
 } from "@/components/ui/tabs";
 import { InstitutionForm } from "@/components/institutionForm/InstitutionForm";
-import { InstitutionsList } from "./InstitutionsList";
+import { InstitutionList } from "@/components/institutionList/InstitutionList";
 import { useInstitutions } from "./useInstitutions";
 
 const TABS = ["create", "list"] as const;
@@ -59,7 +59,7 @@ export default function InstitutionsComponent() {
 
         <TabsContent value="list" forceMount>
           <h2 className="mb-4 text-lg font-medium">Institutions</h2>
-          <InstitutionsList />
+          <InstitutionList />
         </TabsContent>
       </Tabs>
     </div>

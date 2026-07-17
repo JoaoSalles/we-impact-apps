@@ -1,8 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
-import { InstitutionForm } from "./institutionForm";
+import { InstitutionForm } from "./InstitutionForm";
 
 describe("InstitutionForm", () => {
   it("blocks submit and shows an error when name is empty", async () => {
@@ -33,6 +33,41 @@ describe("InstitutionForm", () => {
       state: undefined,
       postalCode: undefined,
     });
+  });
+
+  it("clears the fields after a successful submit by default", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<InstitutionForm onSubmit={onSubmit} />);
+
+    await user.type(screen.getByLabelText("Name"), "Acme");
+    await user.click(screen.getByRole("button", { name: /save/i }));
+
+    await waitFor(() =>
+      expect(screen.queryByDisplayValue("Acme")).toBeNull(),
+    );
+  });
+
+  it("keeps the submitted values when clearOnSubmit is false", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(
+      <InstitutionForm
+        onSubmit={onSubmit}
+        clearOnSubmit={false}
+        defaultValues={{ name: "Acme" }}
+      />,
+    );
+
+    const name = screen.getByLabelText("Name");
+    await user.clear(name);
+    await user.type(name, "Acme Institute");
+    await user.click(screen.getByRole("button", { name: /save/i }));
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    await waitFor(() =>
+      expect(screen.getByDisplayValue("Acme Institute")).toBeTruthy(),
+    );
   });
 
   it("rejects an invalid postal code", async () => {

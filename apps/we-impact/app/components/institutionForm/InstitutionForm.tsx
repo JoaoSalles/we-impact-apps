@@ -32,11 +32,17 @@ export interface InstitutionFormProps {
   onSubmit: (values: InstitutionFormValues) => void | Promise<void>;
   /** Prefill values, e.g. when editing an existing institution. */
   defaultValues?: Partial<InstitutionFormValues>;
+  /**
+   * After a successful submit, clear the form (create) vs keep the entered
+   * values on screen (edit). Defaults to clearing.
+   */
+  clearOnSubmit?: boolean;
 }
 
 export function InstitutionForm({
   onSubmit,
   defaultValues,
+  clearOnSubmit = true,
 }: InstitutionFormProps) {
   const form = useForm<InstitutionFormFields>({
     resolver: zodResolver(institutionFormSchema),
@@ -52,7 +58,9 @@ export function InstitutionForm({
   const handleSubmit = form.handleSubmit(async (fields) => {
     try {
       await onSubmit(toInstitutionValues(fields));
-      form.reset();
+      // Clearing resets to the (empty) defaults; otherwise keep the just-saved
+      // values on screen and mark them as the new clean baseline.
+      form.reset(clearOnSubmit ? undefined : fields);
     } catch {
       // Failure is surfaced by the caller (e.g. a toast); keep the entered
       // values so the user can fix and resubmit.

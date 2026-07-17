@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { InstitutionsList } from "./InstitutionsList";
+import { InstitutionList } from "./InstitutionList";
 import { listInstitutions } from "@/api/institution-api";
 
 vi.mock("@/api/institution-api", () => ({
@@ -30,13 +30,13 @@ function renderList() {
   return render(
     <QueryClientProvider client={queryClient}>
       <MemoryRouter initialEntries={["/institutions?tab=list"]}>
-        <InstitutionsList />
+        <InstitutionList />
       </MemoryRouter>
     </QueryClientProvider>,
   );
 }
 
-describe("InstitutionsList", () => {
+describe("InstitutionList", () => {
   afterEach(() => vi.clearAllMocks());
 
   it("renders fetched rows", async () => {
