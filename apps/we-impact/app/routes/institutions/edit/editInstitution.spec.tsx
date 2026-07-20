@@ -2,14 +2,19 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import EditInstitution from "./EditInstitution";
-import { getInstitution, updateInstitution } from "@/api/institution-api";
+import {
+  getInstitution,
+  listInstitutionProjects,
+  updateInstitution,
+} from "@/api/institution-api";
 
 vi.mock("@/api/institution-api", () => ({
   getInstitution: vi.fn(),
   updateInstitution: vi.fn(),
+  listInstitutionProjects: vi.fn(),
 }));
 
 vi.mock("sonner", () => ({
@@ -18,6 +23,7 @@ vi.mock("sonner", () => ({
 
 const mockedGet = vi.mocked(getInstitution);
 const mockedUpdate = vi.mocked(updateInstitution);
+const mockedProjects = vi.mocked(listInstitutionProjects);
 
 function detail(overrides = {}) {
   return {
@@ -49,6 +55,14 @@ function renderAt(id: string) {
 }
 
 describe("EditInstitution", () => {
+  beforeEach(() =>
+    mockedProjects.mockResolvedValue({
+      items: [],
+      pageNumber: 0,
+      pageSize: 20,
+      hasNext: false,
+    }),
+  );
   afterEach(() => vi.clearAllMocks());
 
   it("fetches the institution by the route id and prefills the form", async () => {
@@ -79,6 +93,8 @@ describe("EditInstitution", () => {
     renderAt("abc");
 
     const name = await screen.findByDisplayValue("Acme");
+    // The form starts read-only behind an Edit toggle; enter edit mode first.
+    await user.click(screen.getByRole("button", { name: /edit/i }));
     await user.clear(name);
     await user.type(name, "Acme Institute");
     await user.click(screen.getByRole("button", { name: /save/i }));

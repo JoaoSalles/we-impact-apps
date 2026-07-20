@@ -1,4 +1,4 @@
-import { TrendingUp, Home, Info, LogOut } from 'lucide-react';
+import { BriefcaseBusiness, Home, Info, LogOut } from 'lucide-react';
 import { Link, useLocation } from 'react-router';
 import {
   Sidebar,
@@ -14,9 +14,8 @@ import { useSession } from '@/auth/session-context';
 
 const navItems = [
   { name: 'Home', url: '/', icon: Home },
-  { name: 'About', url: '/about', icon: Info },
-  { name: 'Institutions', url: '/institutions', icon: Info }
-];
+  { name: 'Institutions', url: '/institutions', icon: Info },
+]
 
 function UserAvatar({ name }: { name: string }) {
   const initial = name.charAt(0).toUpperCase();
@@ -48,7 +47,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <div className="flex h-8 items-center gap-2 px-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
-          <TrendingUp size={16} className="shrink-0" style={{ color: 'var(--text)' }} />
+          <BriefcaseBusiness size={16} className="shrink-0" style={{ color: 'var(--text)' }} />
           <span
             className="truncate text-sm font-medium group-data-[collapsible=icon]:hidden"
             style={{ color: 'var(--text-h)' }}

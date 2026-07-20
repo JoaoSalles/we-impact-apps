@@ -40,6 +40,30 @@ export interface InstitutionDetail extends Institution {
   walletAccountIds: string[];
 }
 
+/** A project belonging to an institution. */
+export interface Project {
+  id: string;
+  institutionId: string;
+  title: string;
+  goal: number | null;
+  description: string | null;
+  status: boolean;
+  currentGoal: number;
+}
+
+export interface ProjectPage {
+  items: Project[];
+  pageNumber: number;
+  pageSize: number;
+  hasNext: boolean;
+}
+
+/** Filters/pagination for `listInstitutionProjects`. */
+export interface ListInstitutionProjectsParams {
+  pageSize?: number;
+  pageNumber?: number;
+}
+
 const registerURL = () => import.meta.env.VITE_REGISTER_API ?? '';
 
 /**
@@ -96,6 +120,31 @@ export async function getInstitution(id: string): Promise<InstitutionDetail> {
     throw new Error(`getInstitution failed: ${response.status}`);
   }
   return (await response.json()) as InstitutionDetail;
+}
+
+/** Fetch a paginated list of the projects belonging to an institution. */
+export async function listInstitutionProjects(
+  id: string,
+  params: ListInstitutionProjectsParams = {},
+): Promise<ProjectPage> {
+  const { pageSize = 20, pageNumber = 0 } = params;
+
+  const query = new URLSearchParams({
+    pageSize: String(pageSize),
+    pageNumber: String(pageNumber),
+  });
+
+  const response = await apiFetch(
+    `${registerURL()}/institutions/${id}/projects?${query}`,
+    {
+      method: 'GET',
+      credentials: 'include',
+    },
+  );
+  if (!response.ok) {
+    throw new Error(`listInstitutionProjects failed: ${response.status}`);
+  }
+  return (await response.json()) as ProjectPage;
 }
 
 /** Update an existing institution's details by id. */

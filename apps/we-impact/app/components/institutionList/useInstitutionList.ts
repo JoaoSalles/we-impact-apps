@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 import { listInstitutions } from "@/api/institution-api";
-import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useDebouncedValue } from "@/lib/useDebouncedValue";
 
 function setOrDelete(params: URLSearchParams, key: string, value: string) {
   if (value.trim()) params.set(key, value.trim());

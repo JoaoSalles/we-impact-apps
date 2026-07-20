@@ -47,7 +47,7 @@ function renderSidebar() {
 test('renders nav items and the session display name', () => {
   renderSidebar();
   expect(screen.getByText('Home')).toBeTruthy();
-  expect(screen.getByText('About')).toBeTruthy();
+  expect(screen.getByText('Institutions')).toBeTruthy();
   expect(screen.getByText('Ada Lovelace')).toBeTruthy();
 });
 

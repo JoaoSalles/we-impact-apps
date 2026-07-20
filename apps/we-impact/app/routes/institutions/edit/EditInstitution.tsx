@@ -3,6 +3,7 @@ import { toast } from "sonner";
 
 import { InstitutionForm } from "@/components/institutionForm/InstitutionForm";
 import type { InstitutionFormValues } from "@/components/institutionForm/schema";
+import { ProjectList } from "@/components/projectList/ProjectList";
 import { useEditInstitution, useUpdateInstitution } from "./useEditInstitution";
 
 export default function EditInstitutionComponent() {
@@ -24,7 +25,7 @@ export default function EditInstitutionComponent() {
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-semibold">institution Overview</h1>
+      <h1 className="text-xl font-semibold">Institution Overview</h1>
 
       {isPending && (
         <p className="mt-2 text-sm text-muted-foreground">Loading…</p>
@@ -46,6 +47,12 @@ export default function EditInstitutionComponent() {
           />
         </div>
       )}
+      <div className="mt-6">
+        <h1 className="text-xl font-semibold">Projects:</h1>
+        <div className="mt-4">
+          <ProjectList institutionId={id ?? ""} />
+        </div>
+      </div>
     </div>
   );
 }
