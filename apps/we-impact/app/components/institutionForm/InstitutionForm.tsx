@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -37,12 +38,19 @@ export interface InstitutionFormProps {
    * values on screen (edit). Defaults to clearing.
    */
   clearOnSubmit?: boolean;
+  /**
+   * When true, render read-only by default with an Edit button; editing
+   * reveals Cancel/Save and enables the fields. Used on the edit page.
+   * Defaults to false (always editable — create flow).
+   */
+  editToggle?: boolean;
 }
 
 export function InstitutionForm({
   onSubmit,
   defaultValues,
   clearOnSubmit = true,
+  editToggle = false,
 }: InstitutionFormProps) {
   const form = useForm<InstitutionFormFields>({
     resolver: zodResolver(institutionFormSchema),
@@ -55,12 +63,16 @@ export function InstitutionForm({
     },
   });
 
+  const [isEditing, setIsEditing] = useState(false);
+  const editable = !editToggle || isEditing;
+
   const handleSubmit = form.handleSubmit(async (fields) => {
     try {
       await onSubmit(toInstitutionValues(fields));
       // Clearing resets to the (empty) defaults; otherwise keep the just-saved
       // values on screen and mark them as the new clean baseline.
       form.reset(clearOnSubmit ? undefined : fields);
+      if (editToggle) setIsEditing(false);
     } catch {
       // Failure is surfaced by the caller (e.g. a toast); keep the entered
       // values so the user can fix and resubmit.
@@ -70,6 +82,7 @@ export function InstitutionForm({
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit} className="space-y-4">
+        <fieldset disabled={!editable} className="min-w-0 space-y-4 border-0 p-0">
         <FormField
           control={form.control}
           name="name"
@@ -181,10 +194,42 @@ export function InstitutionForm({
             </FormItem>
           )}
         />
+        </fieldset>
 
-        <Button type="submit" className="float-end max-xs:w-full max-xs:float-none">
-          Save
-        </Button>
+        <div className="flex justify-end gap-2 max-xs:flex-col">
+          {editToggle && !isEditing ? (
+            <Button
+              type="button"
+              onClick={() => setIsEditing(true)}
+              className="max-xs:w-full"
+            >
+              Edit
+            </Button>
+          ) : (
+            <>
+              {editToggle && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    form.reset();
+                    setIsEditing(false);
+                  }}
+                  className="max-xs:w-full"
+                >
+                  Cancel
+                </Button>
+              )}
+              <Button
+                type="submit"
+                disabled={editToggle && !form.formState.isDirty}
+                className="max-xs:w-full"
+              >
+                Save
+              </Button>
+            </>
+          )}
+        </div>
       </form>
     </Form>
   );

@@ -24,7 +24,7 @@ export default function EditInstitutionComponent() {
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-semibold">Edit institution</h1>
+      <h1 className="text-xl font-semibold">institution Overview</h1>
 
       {isPending && (
         <p className="mt-2 text-sm text-muted-foreground">Loading…</p>
@@ -42,6 +42,7 @@ export default function EditInstitutionComponent() {
             defaultValues={data}
             onSubmit={handleSubmit}
             clearOnSubmit={false}
+            editToggle
           />
         </div>
       )}

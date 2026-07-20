@@ -1,6 +1,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Link } from "react-router";
-import { Pencil } from "lucide-react";
+import { Eye } from "lucide-react";
 
 import type { Institution } from "@/api/institution-api";
 import { Button } from "@/components/ui/button";
@@ -14,9 +14,9 @@ export const institutionColumns: ColumnDef<Institution>[] = [
     header: "",
     cell: ({ row }) => (
       <div className="text-right">
-        <Button asChild variant="ghost" size="icon" aria-label="Edit institution">
+        <Button asChild variant="ghost" size="icon" aria-label="View institution">
           <Link to={`/institutions/${row.original.id}/edit`}>
-            <Pencil />
+            <Eye />
           </Link>
         </Button>
       </div>
