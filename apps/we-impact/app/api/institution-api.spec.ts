@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { createProject, getInstitution, listInstitutions, updateInstitution } from "./institution-api";
+import { createProject, getInstitution, getProject, listInstitutions, updateInstitution, updateProject } from "./institution-api";
 import { apiFetch } from "./api";
 
 vi.mock("./api", () => ({
@@ -163,5 +163,75 @@ describe("createProject", () => {
     mockedFetch.mockResolvedValue({ ok: false, status: 400 } as Response);
 
     await expect(createProject("abc", { title: "X" })).rejects.toThrow("400");
+  });
+});
+
+describe("getProject", () => {
+  afterEach(() => vi.clearAllMocks());
+
+  function projectResponse() {
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({
+        id: "p1",
+        institutionId: "abc",
+        title: "Clean Water",
+        goal: 1000,
+        description: "desc",
+        status: true,
+        currentGoal: 250,
+      }),
+    } as unknown as Response;
+  }
+
+  it("GETs the project by ids with credentials and returns it", async () => {
+    mockedFetch.mockResolvedValue(projectResponse());
+
+    const project = await getProject("abc", "p1");
+
+    const url = new URL(String(mockedFetch.mock.calls[0][0]), "http://test.local");
+    expect(url.pathname.endsWith("/institutions/abc/projects/p1")).toBe(true);
+    expect(mockedFetch.mock.calls[0][1]).toMatchObject({
+      method: "GET",
+      credentials: "include",
+    });
+    expect(project).toMatchObject({ id: "p1", title: "Clean Water", currentGoal: 250 });
+  });
+
+  it("throws when the response is not ok", async () => {
+    mockedFetch.mockResolvedValue({ ok: false, status: 404 } as Response);
+
+    await expect(getProject("abc", "missing")).rejects.toThrow("404");
+  });
+});
+
+describe("updateProject", () => {
+  afterEach(() => vi.clearAllMocks());
+
+  function okResponse() {
+    return { ok: true, status: 200, json: async () => ({}) } as unknown as Response;
+  }
+
+  it("PUTs the values to the project by ids as JSON with credentials", async () => {
+    mockedFetch.mockResolvedValue(okResponse());
+
+    await updateProject("abc", "p1", { title: "Clean Water", goal: 2000, status: false });
+
+    const url = new URL(String(mockedFetch.mock.calls[0][0]), "http://test.local");
+    expect(url.pathname.endsWith("/institutions/abc/projects/p1")).toBe(true);
+    const init = mockedFetch.mock.calls[0][1];
+    expect(init).toMatchObject({ method: "PUT", credentials: "include" });
+    expect(JSON.parse(String(init?.body))).toEqual({
+      title: "Clean Water",
+      goal: 2000,
+      status: false,
+    });
+  });
+
+  it("throws when the response is not ok", async () => {
+    mockedFetch.mockResolvedValue({ ok: false, status: 400 } as Response);
+
+    await expect(updateProject("abc", "p1", { title: "X" })).rejects.toThrow("400");
   });
 });

@@ -71,6 +71,14 @@ export interface CreateProjectValues {
   description?: string;
 }
 
+/** Payload for updating a project under an institution. */
+export interface UpdateProjectValues {
+  title: string;
+  goal?: number;
+  description?: string;
+  status?: boolean;
+}
+
 const registerURL = () => import.meta.env.VITE_REGISTER_API ?? '';
 
 /**
@@ -186,5 +194,43 @@ export async function createProject(
   );
   if (!response.ok) {
     throw new Error(`createProject failed: ${response.status}`);
+  }
+}
+
+/** Fetch a single project's full details by ids. */
+export async function getProject(
+  institutionId: string,
+  projectId: string,
+): Promise<Project> {
+  const response = await apiFetch(
+    `${registerURL()}/institutions/${institutionId}/projects/${projectId}`,
+    {
+      method: 'GET',
+      credentials: 'include',
+    },
+  );
+  if (!response.ok) {
+    throw new Error(`getProject failed: ${response.status}`);
+  }
+  return (await response.json()) as Project;
+}
+
+/** Update an existing project's details by ids. */
+export async function updateProject(
+  institutionId: string,
+  projectId: string,
+  body: UpdateProjectValues,
+): Promise<void> {
+  const response = await apiFetch(
+    `${registerURL()}/institutions/${institutionId}/projects/${projectId}`,
+    {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(body),
+    },
+  );
+  if (!response.ok) {
+    throw new Error(`updateProject failed: ${response.status}`);
   }
 }

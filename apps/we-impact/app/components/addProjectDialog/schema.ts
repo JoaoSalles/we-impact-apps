@@ -15,6 +15,7 @@ export const projectFormSchema = z.object({
     })
     .optional(),
   description: z.string().trim().optional(),
+  status: z.boolean().optional(),
 });
 
 /** Shape of the react-hook-form fields (before empty values are stripped). */
@@ -25,6 +26,7 @@ export type ProjectFormValues = {
   title: string;
   goal?: number;
   description?: string;
+  status?: boolean;
 };
 
 const emptyToUndefined = (value: string | undefined): string | undefined => {
@@ -39,5 +41,6 @@ export function toProjectValues(fields: ProjectFormFields): ProjectFormValues {
     title: fields.title.trim(),
     goal: goal ? Number(goal) : undefined,
     description: emptyToUndefined(fields.description),
+    status: fields.status,
   };
 }

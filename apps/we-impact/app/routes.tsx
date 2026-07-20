@@ -5,5 +5,5 @@ export default [
   route('auth', './routes/auth/index.tsx'),
   route('institutions', './routes/institutions/index.tsx'),
   route('institutions/:id', './routes/institutions/view/index.tsx'),
-  route('institutions/:institutionID/projects/:projectID', './routes/projectsView/index.tsx')
+  route('institutions/:institutionID/projects/:projectID', './routes/projects/view/index.tsx')
   ] satisfies RouteConfig;
