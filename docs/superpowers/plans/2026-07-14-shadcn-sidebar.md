@@ -11,7 +11,7 @@
 ## Global Constraints
 
 - Router imports come from `react-router`, never `react-router-dom` (not installed).
-- The `@` path alias resolves to `apps/we-impact/app` (e.g. `@/lib/cn`, `@/components/ui/sidebar`, `@/hooks/use-mobile`).
+- The `@` path alias resolves to `apps/we-impact/app` (e.g. `@/lib/cn`, `@/components/ui/sidebar`, `@/lib/use-mobile`).
 - All ui components import `cn` from `@/lib/cn` (keep this exact path).
 - `tsconfig.base.json` sets `noUnusedLocals: true` and `strict: true` — no unused imports/vars.
 - Tests live under `apps/we-impact/tests/**` and import app code by relative path (`../../app/...`). The `@` alias resolves in tests via `vite.config.mts` `resolve.alias`.
@@ -33,12 +33,12 @@ Make every copied `ui/*` component type-check and make Tailwind load. This folds
 - Modify: `apps/we-impact/app/root.tsx` (stylesheet link only)
 - Create: `apps/we-impact/components.json`
 - Create: `apps/we-impact/app/lib/cn.ts`
-- Create: `apps/we-impact/app/hooks/use-mobile.ts`
+- Create: `apps/we-impact/app/lib/use-mobile.ts`
 - Create: `apps/we-impact/app/app.css`
 - Delete: `apps/we-impact/app/components/ui/{card,command,dialog,popover,table}.tsx` (unused by the sidebar; avoid extra deps)
 
 **Interfaces:**
-- Produces: `cn(...inputs: ClassValue[]): string` from `@/lib/cn`; `useIsMobile(): boolean` from `@/hooks/use-mobile`; the `@` → `app` alias; Tailwind theme tokens (`--sidebar*`, `--border`, `--text`, `bg-background-selected`, etc.).
+- Produces: `cn(...inputs: ClassValue[]): string` from `@/lib/cn`; `useIsMobile(): boolean` from `@/lib/use-mobile`; the `@` → `app` alias; Tailwind theme tokens (`--sidebar*`, `--border`, `--text`, `bg-background-selected`, etc.).
 - Consumes: nothing from other tasks.
 
 - [ ] **Step 1: Delete the unused copied ui components**
@@ -89,7 +89,7 @@ export function cn(...inputs: ClassValue[]) {
 
 - [ ] **Step 4: Create the `use-mobile` hook**
 
-Create `apps/we-impact/app/hooks/use-mobile.ts`:
+Create `apps/we-impact/app/lib/use-mobile.ts`:
 
 ```ts
 import * as React from "react";
@@ -277,7 +277,7 @@ Create `apps/we-impact/components.json`:
     "utils": "@/lib/cn",
     "ui": "@/components/ui",
     "lib": "@/lib",
-    "hooks": "@/hooks"
+    "hooks": "@/lib"
   },
   "iconLibrary": "lucide"
 }

@@ -1,6 +1,7 @@
 import { useParams } from "react-router";
 import { toast } from "sonner";
 
+import { AddProjectDialog } from "@/components/addProjectDialog/AddProjectDialog";
 import { InstitutionForm } from "@/components/institutionForm/InstitutionForm";
 import type { InstitutionFormValues } from "@/components/institutionForm/schema";
 import { ProjectList } from "@/components/projectList/ProjectList";
@@ -48,7 +49,10 @@ export default function EditInstitutionComponent() {
         </div>
       )}
       <div className="mt-6">
-        <h1 className="text-xl font-semibold">Projects:</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-semibold">Projects:</h1>
+          <AddProjectDialog institutionId={id ?? ""} />
+        </div>
         <div className="mt-4">
           <ProjectList institutionId={id ?? ""} />
         </div>

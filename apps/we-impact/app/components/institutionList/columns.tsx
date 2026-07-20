@@ -4,6 +4,12 @@ import { Eye } from "lucide-react";
 
 import type { Institution } from "@/api/institution-api";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const institutionColumns: ColumnDef<Institution>[] = [
   { accessorKey: "name", header: "Name" },
@@ -14,11 +20,18 @@ export const institutionColumns: ColumnDef<Institution>[] = [
     header: "",
     cell: ({ row }) => (
       <div className="text-right">
-        <Button asChild variant="ghost" size="icon" aria-label="View institution">
-          <Link to={`/institutions/${row.original.id}/edit`}>
-            <Eye />
-          </Link>
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button asChild variant="ghost" size="icon" aria-label="Manage institution">
+                <Link to={`/institutions/${row.original.id}`}>
+                  <Eye />
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Manage institution</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     ),
   },

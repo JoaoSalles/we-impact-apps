@@ -127,6 +127,12 @@
   /* Custom breakpoint: `xs:*` applies at >=420px, `max-xs:*` below 420px. */
   --breakpoint-xs: 420px;
 
+  /* NOTE: don't add t-shirt-named spacing tokens (`--spacing-sm/md/lg/xl`).
+     Those names are shared with Tailwind's max-width/container scale, so they
+     silently shadow `max-w-lg`, `max-w-sm`, etc. (e.g. `max-w-lg` became 24px).
+     Use the numeric spacing scale (`p-4`, `gap-2`) for padding/margin, and the
+     t-shirt scale for widths. */
+
   --ease-standard: var(--motion-standard);
   --ease-out-fast: var(--motion-out-fast);
   --shadow-ambient: var(--shadow-card);

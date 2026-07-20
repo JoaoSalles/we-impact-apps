@@ -8,7 +8,7 @@ export function RootLayout() {
       <AppSidebar />
       <SidebarInset>
         <SidebarTrigger />
-        <div className='p-md'>
+        <div className='p-4'>
           <Outlet/>
         </div>
       </SidebarInset>

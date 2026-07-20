@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { getInstitution, listInstitutions, updateInstitution } from "./institution-api";
+import { createProject, getInstitution, listInstitutions, updateInstitution } from "./institution-api";
 import { apiFetch } from "./api";
 
 vi.mock("./api", () => ({
@@ -133,5 +133,35 @@ describe("updateInstitution", () => {
     mockedFetch.mockResolvedValue({ ok: false, status: 400 } as Response);
 
     await expect(updateInstitution("abc", { name: "Acme" })).rejects.toThrow("400");
+  });
+});
+
+describe("createProject", () => {
+  afterEach(() => vi.clearAllMocks());
+
+  function okResponse() {
+    return { ok: true, status: 201, json: async () => ({}) } as unknown as Response;
+  }
+
+  it("POSTs the values to the institution's projects as JSON with credentials", async () => {
+    mockedFetch.mockResolvedValue(okResponse());
+
+    await createProject("abc", { title: "Clean Water", goal: 1000, description: "desc" });
+
+    const url = new URL(String(mockedFetch.mock.calls[0][0]), "http://test.local");
+    expect(url.pathname.endsWith("/institutions/abc/projects")).toBe(true);
+    const init = mockedFetch.mock.calls[0][1];
+    expect(init).toMatchObject({ method: "POST", credentials: "include" });
+    expect(JSON.parse(String(init?.body))).toEqual({
+      title: "Clean Water",
+      goal: 1000,
+      description: "desc",
+    });
+  });
+
+  it("throws when the response is not ok", async () => {
+    mockedFetch.mockResolvedValue({ ok: false, status: 400 } as Response);
+
+    await expect(createProject("abc", { title: "X" })).rejects.toThrow("400");
   });
 });

@@ -4,6 +4,6 @@ export default [
   index('./routes/home/app.tsx'),
   route('auth', './routes/auth/index.tsx'),
   route('institutions', './routes/institutions/index.tsx'),
-  route('institutions/:id/edit', './routes/institutions/edit/index.tsx'),
-  route('projects/:id/edit', './routes/projectsView/index.tsx')
+  route('institutions/:id', './routes/institutions/view/index.tsx'),
+  route('institutions/:institutionID/projects/:projectID', './routes/projectsView/index.tsx')
   ] satisfies RouteConfig;

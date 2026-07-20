@@ -64,6 +64,13 @@ export interface ListInstitutionProjectsParams {
   pageNumber?: number;
 }
 
+/** Payload for creating a project under an institution. */
+export interface CreateProjectValues {
+  title: string;
+  goal?: number;
+  description?: string;
+}
+
 const registerURL = () => import.meta.env.VITE_REGISTER_API ?? '';
 
 /**
@@ -160,5 +167,24 @@ export async function updateInstitution(
   });
   if (!response.ok) {
     throw new Error(`updateInstitution failed: ${response.status}`);
+  }
+}
+
+/** Create a new project under an institution. */
+export async function createProject(
+  id: string,
+  body: CreateProjectValues,
+): Promise<void> {
+  const response = await apiFetch(
+    `${registerURL()}/institutions/${id}/projects`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(body),
+    },
+  );
+  if (!response.ok) {
+    throw new Error(`createProject failed: ${response.status}`);
   }
 }

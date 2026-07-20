@@ -52,15 +52,16 @@ export default function InstitutionsComponent() {
           <TabsTrigger value="create">Creation</TabsTrigger>
         </TabsList>
 
+        <TabsContent value="list" forceMount>
+          <h2 className="mb-4 text-lg font-medium">Institutions</h2>
+          <InstitutionList />
+        </TabsContent>
+
         <TabsContent value="create" forceMount>
           <h2 className="text-lg font-medium">Create institution</h2>
           <InstitutionForm onSubmit={handleCreateInstitution} />
         </TabsContent>
 
-        <TabsContent value="list" forceMount>
-          <h2 className="mb-4 text-lg font-medium">Institutions</h2>
-          <InstitutionList />
-        </TabsContent>
       </Tabs>
     </div>
   );

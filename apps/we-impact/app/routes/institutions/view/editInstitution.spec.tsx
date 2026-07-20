@@ -4,7 +4,7 @@ import { MemoryRouter, Route, Routes } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import EditInstitution from "./EditInstitution";
+import EditInstitution from "./ViewInstitution";
 import {
   getInstitution,
   listInstitutionProjects,
@@ -45,9 +45,9 @@ function renderAt(id: string) {
   });
   return render(
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter initialEntries={[`/institutions/${id}/edit`]}>
+      <MemoryRouter initialEntries={[`/institutions/${id}`]}>
         <Routes>
-          <Route path="/institutions/:id/edit" element={<EditInstitution />} />
+          <Route path="/institutions/:id" element={<EditInstitution />} />
         </Routes>
       </MemoryRouter>
     </QueryClientProvider>,
