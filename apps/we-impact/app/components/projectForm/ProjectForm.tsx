@@ -12,6 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ExtraContentFields } from "@/components/extraContentFields/ExtraContentFields";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -44,6 +45,8 @@ export interface ProjectFormProps {
   showStatus?: boolean;
   /** Read-only raised amount shown alongside the status switch. */
   currentGoal?: number;
+  /** When true, render the dynamic "Extra fields" section (edit flow only). */
+  showExtraContent?: boolean;
 }
 
 export function ProjectForm({
@@ -54,6 +57,7 @@ export function ProjectForm({
   editToggle = false,
   showStatus = false,
   currentGoal,
+  showExtraContent = false,
 }: ProjectFormProps) {
   const form = useForm<ProjectFormFields>({
     resolver: zodResolver(projectFormSchema),
@@ -62,6 +66,7 @@ export function ProjectForm({
       goal: defaultValues?.goal ?? "",
       description: defaultValues?.description ?? "",
       status: defaultValues?.status,
+      extraContent: defaultValues?.extraContent ?? [],
     },
   });
 
@@ -151,6 +156,8 @@ export function ProjectForm({
               </div>
             </>
           )}
+
+          {showExtraContent && <ExtraContentFields control={form.control} />}
         </fieldset>
 
         <div className="flex justify-end gap-2 max-xs:flex-col">

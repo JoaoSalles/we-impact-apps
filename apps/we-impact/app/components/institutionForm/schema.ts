@@ -1,5 +1,13 @@
 import { z } from "zod";
 
+import {
+  extraContentSchema,
+  extraContentToRows,
+  rowsToRecord,
+} from "@/components/extraContentFields/schema";
+
+export { extraContentToRows };
+
 /** Brazilian postal code (CEP), e.g. 01310-100 or 01310100. */
 const CEP_REGEX = /^\d{5}-?\d{3}$/;
 
@@ -54,6 +62,18 @@ export const institutionFormSchema = z.object({
       message: "Invalid postal code (use 00000-000)",
     })
     .optional(),
+  description: z.string().trim().optional(),
+  numBeneficiary: z
+    .string()
+    .trim()
+    .refine((value) => value.length === 0 || /^\d+$/.test(value), {
+      message: "Must be a whole number",
+    })
+    .optional(),
+  website: z.string().trim().optional(),
+  // Dynamic key/value rows. Edited as an array here (react-hook-form field
+  // array) and aggregated into an object map in `toInstitutionValues`.
+  extraContent: extraContentSchema,
 });
 
 /** Shape of the react-hook-form fields (before empty values are stripped). */
@@ -66,11 +86,22 @@ export type InstitutionFormValues = {
   city?: string;
   state?: string;
   postalCode?: string;
+  description?: string;
+  numBeneficiary?: number;
+  website?: string;
+  extraContent?: Record<string, string>;
 };
 
 const emptyToUndefined = (value: string | undefined): string | undefined => {
   const trimmed = value?.trim();
   return trimmed ? trimmed : undefined;
+};
+
+const emptyToUndefinedNumber = (
+  value: string | undefined,
+): number | undefined => {
+  const trimmed = value?.trim();
+  return trimmed ? Number(trimmed) : undefined;
 };
 
 /** Convert validated form fields into the cleaned submit payload. */
@@ -83,5 +114,9 @@ export function toInstitutionValues(
     city: emptyToUndefined(fields.city),
     state: emptyToUndefined(fields.state),
     postalCode: emptyToUndefined(fields.postalCode),
+    description: emptyToUndefined(fields.description),
+    numBeneficiary: emptyToUndefinedNumber(fields.numBeneficiary),
+    website: emptyToUndefined(fields.website),
+    extraContent: rowsToRecord(fields.extraContent),
   };
 }

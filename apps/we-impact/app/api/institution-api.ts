@@ -37,6 +37,10 @@ export interface InstitutionPage {
 /** A single institution's full details, including fields omitted from the list. */
 export interface InstitutionDetail extends Institution {
   postalCode: string;
+  description?: string;
+  numBeneficiary?: number;
+  website?: string;
+  extraContent?: Record<string, string>;
   walletAccountIds: string[];
 }
 
@@ -49,6 +53,7 @@ export interface Project {
   description: string | null;
   status: boolean;
   currentGoal: number;
+  extraContent?: Record<string, string>;
 }
 
 export interface ProjectPage {
@@ -77,6 +82,7 @@ export interface UpdateProjectValues {
   goal?: number;
   description?: string;
   status?: boolean;
+  extraContent?: Record<string, string>;
 }
 
 const registerURL = () => import.meta.env.VITE_REGISTER_API ?? '';

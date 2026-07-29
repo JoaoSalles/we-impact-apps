@@ -12,6 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -20,8 +21,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { ExtraContentFields } from "@/components/extraContentFields/ExtraContentFields";
 import {
   BRAZILIAN_STATES,
+  extraContentToRows,
   institutionFormSchema,
   toInstitutionValues,
   type InstitutionFormFields,
@@ -60,6 +63,13 @@ export function InstitutionForm({
       city: defaultValues?.city ?? "",
       state: defaultValues?.state,
       postalCode: defaultValues?.postalCode ?? "",
+      description: defaultValues?.description ?? "",
+      numBeneficiary:
+        defaultValues?.numBeneficiary != null
+          ? String(defaultValues.numBeneficiary)
+          : "",
+      website: defaultValues?.website ?? "",
+      extraContent: extraContentToRows(defaultValues?.extraContent),
     },
   });
 
@@ -194,6 +204,68 @@ export function InstitutionForm({
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="numBeneficiary"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Number of beneficiaries</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  min={0}
+                  placeholder="0"
+                  {...field}
+                  autoComplete="off"
+                  data-1p-ignore
+                  data-lpignore="true"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="website"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Website</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="https://example.org"
+                  {...field}
+                  autoComplete="off"
+                  data-1p-ignore
+                  data-lpignore="true"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Short description of the institution"
+                  rows={4}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <ExtraContentFields control={form.control} />
         </fieldset>
 
         <div className="flex justify-end gap-2 max-xs:flex-col">

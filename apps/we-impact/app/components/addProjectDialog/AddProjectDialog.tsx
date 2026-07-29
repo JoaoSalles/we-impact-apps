@@ -10,9 +10,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { ProjectForm } from "./ProjectForm";
-import type { ProjectFormValues } from "./schema";
-import { useCreateProject } from "./useCreateProject";
+import { ProjectForm } from "../projectForm/ProjectForm";
+import type { ProjectFormValues } from "../projectForm/schema";
+import { useCreateProject } from "../projectForm/useCreateProject";
 
 export function AddProjectDialog({ institutionId }: { institutionId: string }) {
   const [open, setOpen] = useState(false);

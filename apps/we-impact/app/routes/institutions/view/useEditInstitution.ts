@@ -37,6 +37,10 @@ export function useUpdateInstitution(id: string) {
               city: values.city ?? "",
               state: values.state ?? "",
               postalCode: values.postalCode ?? "",
+              description: values.description,
+              numBeneficiary: values.numBeneficiary,
+              website: values.website,
+              extraContent: values.extraContent,
             }
           : old,
       );

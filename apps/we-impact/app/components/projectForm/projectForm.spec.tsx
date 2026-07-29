@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { ProjectForm } from "./ProjectForm";
+import { ProjectForm } from "../projectForm/ProjectForm";
 
 // Radix Switch measures its thumb via ResizeObserver, which jsdom lacks.
 class ResizeObserverStub {
@@ -121,6 +121,89 @@ describe("ProjectForm", () => {
       goal: 1000,
       description: undefined,
       status: false,
+    });
+  });
+
+  describe("extra fields (edit only)", () => {
+    it("does not render the section without showExtraContent", () => {
+      render(<ProjectForm onSubmit={vi.fn()} onCancel={vi.fn()} />);
+
+      expect(screen.queryByText("Extra fields")).toBeNull();
+      expect(
+        screen.queryByRole("button", { name: /add field/i }),
+      ).toBeNull();
+    });
+
+    it("aggregates added rows into the extraContent object", async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn();
+      render(
+        <ProjectForm
+          onSubmit={onSubmit}
+          defaultValues={{ title: "Clean Water", goal: "1000" }}
+          editToggle
+          showExtraContent
+          clearOnSubmit={false}
+        />,
+      );
+
+      await user.click(screen.getByRole("button", { name: /edit/i }));
+      await user.click(screen.getByRole("button", { name: /add field/i }));
+      await user.type(screen.getByPlaceholderText("Field name"), "region");
+      await user.type(screen.getByPlaceholderText("Value"), "Northeast");
+      await user.click(screen.getByRole("button", { name: /save/i }));
+
+      expect(onSubmit).toHaveBeenCalledTimes(1);
+      expect(onSubmit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "Clean Water",
+          extraContent: { region: "Northeast" },
+        }),
+      );
+    });
+
+    it("blocks submit on duplicate row names", async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn();
+      render(
+        <ProjectForm
+          onSubmit={onSubmit}
+          defaultValues={{ title: "Clean Water" }}
+          editToggle
+          showExtraContent
+          clearOnSubmit={false}
+        />,
+      );
+
+      await user.click(screen.getByRole("button", { name: /edit/i }));
+      await user.click(screen.getByRole("button", { name: /add field/i }));
+      await user.click(screen.getByRole("button", { name: /add field/i }));
+
+      const names = screen.getAllByPlaceholderText("Field name");
+      await user.type(names[0], "region");
+      await user.type(names[1], "region");
+      await user.click(screen.getByRole("button", { name: /save/i }));
+
+      expect(screen.queryByText(/duplicate field name/i)).not.toBeNull();
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it("prefills rows from an existing extraContent object", () => {
+      render(
+        <ProjectForm
+          onSubmit={vi.fn()}
+          defaultValues={{
+            title: "Clean Water",
+            extraContent: [{ name: "region", value: "Northeast" }],
+          }}
+          editToggle
+          showExtraContent
+          clearOnSubmit={false}
+        />,
+      );
+
+      expect(screen.getByDisplayValue("region")).toBeTruthy();
+      expect(screen.getByDisplayValue("Northeast")).toBeTruthy();
     });
   });
 });

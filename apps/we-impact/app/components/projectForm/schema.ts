@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+import {
+  extraContentSchema,
+  rowsToRecord,
+} from "@/components/extraContentFields/schema";
+
+export { extraContentToRows } from "@/components/extraContentFields/schema";
+
 /**
  * Validation schema for the raw project form fields. `goal` stays a (possibly
  * empty) string here; it's parsed to a number and empty optionals are stripped
@@ -16,6 +23,9 @@ export const projectFormSchema = z.object({
     .optional(),
   description: z.string().trim().optional(),
   status: z.boolean().optional(),
+  // Dynamic key/value rows, edit flow only. Aggregated into an object map in
+  // `toProjectValues`.
+  extraContent: extraContentSchema,
 });
 
 /** Shape of the react-hook-form fields (before empty values are stripped). */
@@ -27,6 +37,7 @@ export type ProjectFormValues = {
   goal?: number;
   description?: string;
   status?: boolean;
+  extraContent?: Record<string, string>;
 };
 
 const emptyToUndefined = (value: string | undefined): string | undefined => {
@@ -42,5 +53,6 @@ export function toProjectValues(fields: ProjectFormFields): ProjectFormValues {
     goal: goal ? Number(goal) : undefined,
     description: emptyToUndefined(fields.description),
     status: fields.status,
+    extraContent: rowsToRecord(fields.extraContent),
   };
 }

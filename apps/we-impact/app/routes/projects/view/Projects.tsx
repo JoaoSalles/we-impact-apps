@@ -2,8 +2,11 @@ import { ArrowLeft } from "lucide-react";
 import { Link, useParams } from "react-router";
 import { toast } from "sonner";
 
-import { ProjectForm } from "@/components/addProjectDialog/ProjectForm";
-import type { ProjectFormValues } from "@/components/addProjectDialog/schema";
+import { ProjectForm } from "@/components/projectForm/ProjectForm";
+import {
+  extraContentToRows,
+  type ProjectFormValues,
+} from "@/components/projectForm/schema";
 import { Button } from "@/components/ui/button";
 import { useProject, useUpdateProject } from "./useEditProject";
 
@@ -56,12 +59,14 @@ export default function ProjectView() {
               goal: data.goal == null ? "" : String(data.goal),
               description: data.description ?? "",
               status: data.status,
+              extraContent: extraContentToRows(data.extraContent),
             }}
             currentGoal={data.currentGoal}
             onSubmit={handleSubmit}
             clearOnSubmit={false}
             editToggle
             showStatus
+            showExtraContent
           />
         </div>
       )}

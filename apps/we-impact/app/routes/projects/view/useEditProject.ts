@@ -37,6 +37,7 @@ export function useUpdateProject(institutionId: string, projectId: string) {
                 goal: values.goal ?? null,
                 description: values.description ?? null,
                 status: values.status ?? old.status,
+                extraContent: values.extraContent,
               }
             : old,
       );
