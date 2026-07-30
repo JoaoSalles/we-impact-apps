@@ -70,7 +70,7 @@ jobs:
               echo "we_impact=false" >> "$GITHUB_OUTPUT"
             fi
           else
-            AFFECTED=$(pnpm exec nx show projects --affected --type app --json)
+            AFFECTED=$(./node_modules/.bin/nx show projects --affected --type app --json)
             echo "Affected projects: $AFFECTED"
 
             if echo "$AFFECTED" | jq -e 'index("auth") != null' > /dev/null; then
@@ -161,6 +161,7 @@ jobs:
       - name: Build we-impact
         env:
           VITE_AUTH_REMOTE_ENTRY: ${{ vars.VITE_AUTH_REMOTE_ENTRY }}
+          VITE_AUTH_API: ${{ vars.VITE_AUTH_API }}
         run: pnpm exec nx build @we-impact/we-impact
 
       - name: Configure AWS credentials
