@@ -1,0 +1,149 @@
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+
+env:
+  NX_NO_CLOUD: "true"
+
+jobs:
+  detect-affected:
+    name: Detect affected apps
+    runs-on: ubuntu-latest
+    outputs:
+      auth: ${{ steps.affected.outputs.auth }}
+      we_impact: ${{ steps.affected.outputs.we_impact }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Derive Nx base/head SHAs
+        uses: nrwl/nx-set-shas@v4
+
+      - name: Determine affected apps
+        id: affected
+        run: |
+          AFFECTED=$(pnpm exec nx show projects --affected --type app --json)
+          echo "Affected projects: $AFFECTED"
+
+          if echo "$AFFECTED" | jq -e 'index("auth") != null' > /dev/null; then
+            echo "auth=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "auth=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          if echo "$AFFECTED" | jq -e 'index("@we-impact/we-impact") != null' > /dev/null; then
+            echo "we_impact=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "we_impact=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy-auth:
+    name: Deploy auth
+    needs: detect-affected
+    if: needs.detect-affected.outputs.auth == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build auth
+        env:
+          VITE_AUTH_ORIGIN: ${{ vars.VITE_AUTH_ORIGIN }}
+          VITE_GOOGLE_CLIENT_ID: ${{ vars.VITE_GOOGLE_CLIENT_ID }}
+        run: pnpm exec nx build auth
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Sync to S3
+        run: aws s3 sync dist/apps/auth s3://weimpact-web-auth --delete
+
+      - name: Invalidate CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ vars.AUTH_CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths '/*'
+
+  deploy-we-impact:
+    name: Deploy we-impact
+    needs: detect-affected
+    if: needs.detect-affected.outputs.we_impact == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build we-impact
+        env:
+          VITE_AUTH_REMOTE_ENTRY: ${{ vars.VITE_AUTH_REMOTE_ENTRY }}
+        run: pnpm exec nx build @we-impact/we-impact
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Sync to S3
+        run: aws s3 sync apps/we-impact/dist s3://weimpact-web-dashboard --delete
+
+      - name: Invalidate CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ vars.DASHBOARD_CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths '/*'
