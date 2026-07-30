@@ -432,14 +432,14 @@ git commit -m "feat: add shadcn table primitive and generic DataTable"
 ### Task 3: `useDebouncedValue` + `useInstitutionList` hook
 
 **Files:**
-- Create: `apps/we-impact/app/hooks/useDebouncedValue.ts`
+- Create: `apps/we-impact/app/lib/useDebouncedValue.ts`
 - Create: `apps/we-impact/app/routes/institutions/useInstitutionList.ts`
 - Test: `apps/we-impact/app/routes/institutions/useInstitutionList.spec.tsx`
 
 **Interfaces:**
 - Consumes: `listInstitutions`, `Institution` from `@/api/institution-api`; `useSearchParams` from `react-router`.
 - Produces:
-  - `useDebouncedValue<T>(value: T, delayMs?: number): T` from `@/hooks/useDebouncedValue`.
+  - `useDebouncedValue<T>(value: T, delayMs?: number): T` from `@/lib/useDebouncedValue`.
   - `useInstitutionList()` returning:
     ```ts
     {
@@ -458,7 +458,7 @@ git commit -m "feat: add shadcn table primitive and generic DataTable"
 
 - [ ] **Step 1: Create the debounce hook**
 
-Create `apps/we-impact/app/hooks/useDebouncedValue.ts`:
+Create `apps/we-impact/app/lib/useDebouncedValue.ts`:
 
 ```ts
 import { useEffect, useState } from "react";
@@ -573,7 +573,7 @@ import {
   type Institution,
   type InstitutionPage,
 } from "@/api/institution-api";
-import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useDebouncedValue } from "@/lib/useDebouncedValue";
 
 const EMPTY_PAGE: InstitutionPage = {
   items: [],
@@ -675,7 +675,7 @@ Expected: PASS (3 tests).
 - [ ] **Step 6: Commit**
 
 ```bash
-git add apps/we-impact/app/hooks/useDebouncedValue.ts apps/we-impact/app/routes/institutions/useInstitutionList.ts apps/we-impact/app/routes/institutions/useInstitutionList.spec.tsx
+git add apps/we-impact/app/lib/useDebouncedValue.ts apps/we-impact/app/routes/institutions/useInstitutionList.ts apps/we-impact/app/routes/institutions/useInstitutionList.spec.tsx
 git commit -m "feat: add useInstitutionList hook with debounced url-synced filters"
 ```
 

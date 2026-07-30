@@ -10,7 +10,7 @@ verbatim from the `web-my-inflation` project but are non-functional in the host:
 
 - They import from `react-router-dom`; the host uses `react-router` (v7 framework
   mode) and does not install `react-router-dom`.
-- They import `@/components/ui/*`, `@/lib/utils`, `@/hooks/use-mobile`, and
+- They import `@/components/ui/*`, `@/lib/utils`, `@/lib/use-mobile`, and
   `@/store/user`; the host has **no `@` path alias**, no `lib/utils` (`cn`), no
   `use-mobile` hook, and no zustand store.
 - There is **no Tailwind** in the host (no `@tailwindcss/vite`, no
@@ -48,7 +48,7 @@ the host's existing session/auth.
 - **`apps/we-impact/components.json`** (new)
   - shadcn config with `aliases` pointing at `app/…`
     (`components: "@/components"`, `ui: "@/components/ui"`, `utils: "@/lib/utils"`,
-    `lib: "@/lib"`, `hooks: "@/hooks"`), `iconLibrary: "lucide"`,
+    `lib: "@/lib"`, `hooks: "@/lib"`), `iconLibrary: "lucide"`,
     `tailwind.css: "app/app.css"`, `cssVariables: true`, `baseColor: "neutral"`,
     `rsc: false`, `tsx: true`.
 - **Root `package.json`** (deps live at the workspace root in this pnpm/Nx setup)
@@ -74,7 +74,7 @@ the host's existing session/auth.
 
 - **`apps/we-impact/app/lib/utils.ts`** (new): standard shadcn `cn()`
   (`clsx` + `tailwind-merge`).
-- **`apps/we-impact/app/hooks/use-mobile.ts`** (new): standard shadcn
+- **`apps/we-impact/app/lib/use-mobile.ts`** (new): standard shadcn
   `useIsMobile` hook (required by `ui/sidebar.tsx`).
 
 ### Sidebar & layout

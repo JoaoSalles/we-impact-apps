@@ -54,3 +54,5 @@ vitest.config.*.timestamp*
 test-output
 
 latest.json
+
+docs*
