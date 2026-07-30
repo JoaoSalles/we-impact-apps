@@ -3,6 +3,17 @@ name: Deploy
 on:
   push:
     branches: [master]
+  workflow_dispatch:
+    inputs:
+      app:
+        description: Which app(s) to build and deploy
+        required: true
+        type: choice
+        options:
+          - both
+          - auth
+          - we-impact
+        default: both
 
 env:
   NX_NO_CLOUD: "true"
@@ -35,24 +46,44 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Derive Nx base/head SHAs
+        if: github.event_name == 'push'
         uses: nrwl/nx-set-shas@v4
 
       - name: Determine affected apps
         id: affected
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          MANUAL_APP: ${{ github.event.inputs.app }}
         run: |
-          AFFECTED=$(pnpm exec nx show projects --affected --type app --json)
-          echo "Affected projects: $AFFECTED"
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "Manual trigger, app input: $MANUAL_APP"
 
-          if echo "$AFFECTED" | jq -e 'index("auth") != null' > /dev/null; then
-            echo "auth=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "auth=false" >> "$GITHUB_OUTPUT"
-          fi
+            if [ "$MANUAL_APP" = "auth" ] || [ "$MANUAL_APP" = "both" ]; then
+              echo "auth=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "auth=false" >> "$GITHUB_OUTPUT"
+            fi
 
-          if echo "$AFFECTED" | jq -e 'index("@we-impact/we-impact") != null' > /dev/null; then
-            echo "we_impact=true" >> "$GITHUB_OUTPUT"
+            if [ "$MANUAL_APP" = "we-impact" ] || [ "$MANUAL_APP" = "both" ]; then
+              echo "we_impact=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "we_impact=false" >> "$GITHUB_OUTPUT"
+            fi
           else
-            echo "we_impact=false" >> "$GITHUB_OUTPUT"
+            AFFECTED=$(pnpm exec nx show projects --affected --type app --json)
+            echo "Affected projects: $AFFECTED"
+
+            if echo "$AFFECTED" | jq -e 'index("auth") != null' > /dev/null; then
+              echo "auth=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "auth=false" >> "$GITHUB_OUTPUT"
+            fi
+
+            if echo "$AFFECTED" | jq -e 'index("@we-impact/we-impact") != null' > /dev/null; then
+              echo "we_impact=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "we_impact=false" >> "$GITHUB_OUTPUT"
+            fi
           fi
 
   deploy-auth:
