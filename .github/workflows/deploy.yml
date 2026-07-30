@@ -4,7 +4,6 @@ on:
   push:
     branches: [master]
 
-
 env:
   NX_NO_CLOUD: "true"
 
@@ -24,7 +23,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 11
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -71,8 +70,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
-
+          version: 11
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -118,7 +116,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 11
 
       - name: Setup Node
         uses: actions/setup-node@v4
