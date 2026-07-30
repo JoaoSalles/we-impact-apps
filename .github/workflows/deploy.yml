@@ -4,6 +4,7 @@ on:
   push:
     branches: [master]
 
+
 env:
   NX_NO_CLOUD: "true"
 
