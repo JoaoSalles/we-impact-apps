@@ -14,7 +14,9 @@ intentionally empty). Run them through Nx:
 ```bash
 pnpm exec nx dev we-impact        # host dev server on :4200
 pnpm exec nx serve auth           # auth remote dev server on :4201 (run alongside host)
-pnpm exec nx build we-impact      # production build -> apps/we-impact/dist
+pnpm exec nx build we-impact      # production build -> apps/we-impact/build/client
+                                   # (React Router's vite plugin overrides vite.config.ts's
+                                   # build.outDir; SPA mode only emits the client build)
 pnpm exec nx test we-impact       # vitest (single run; watch is off in vite.config)
 pnpm exec nx test auth
 pnpm exec nx e2e we-impact-e2e    # Playwright e2e
