@@ -170,7 +170,7 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Sync to S3
-        run: aws s3 sync apps/we-impact/dist s3://weimpact-web-dashboard --delete
+        run: aws s3 sync apps/we-impact/build/client s3://weimpact-web-dashboard --delete
 
       - name: Invalidate CloudFront
         run: |
