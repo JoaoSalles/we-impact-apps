@@ -115,6 +115,7 @@ jobs:
         env:
           VITE_AUTH_ORIGIN: ${{ vars.VITE_AUTH_ORIGIN }}
           VITE_GOOGLE_CLIENT_ID: ${{ vars.VITE_GOOGLE_CLIENT_ID }}
+          VITE_AUTH_API: ${{ vars.VITE_AUTH_API }}
         run: pnpm exec nx build auth
 
       - name: Configure AWS credentials
@@ -162,6 +163,7 @@ jobs:
         env:
           VITE_AUTH_REMOTE_ENTRY: ${{ vars.VITE_AUTH_REMOTE_ENTRY }}
           VITE_AUTH_API: ${{ vars.VITE_AUTH_API }}
+          VITE_REGISTER_API: ${{ vars.VITE_REGISTER_API }}
         run: pnpm exec nx build @we-impact/we-impact
 
       - name: Configure AWS credentials
