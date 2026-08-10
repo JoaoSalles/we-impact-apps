@@ -5,6 +5,11 @@ dist
 tmp
 out-tsc
 
+# Vitest's internal Vite server uses this literal placeholder as build.outDir;
+# the Module Federation vite plugin's dts generation leaks real files into it
+# when running tests (see apps/auth/module-federation.config.ts `dts` option).
+dummy-non-existing-folder
+
 # dependencies
 node_modules
 

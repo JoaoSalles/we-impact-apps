@@ -70,7 +70,12 @@ jobs:
               echo "we_impact=false" >> "$GITHUB_OUTPUT"
             fi
           else
-            AFFECTED=$(./node_modules/.bin/nx show projects --affected --type app --json)
+            RAW_AFFECTED=$(./node_modules/.bin/nx show projects --affected --type app --json)
+            # nx's --json output can be preceded by third-party warnings (e.g. React
+            # Router future-flag warnings) printed to stdout during graph computation,
+            # so pull out just the JSON array line instead of trusting raw stdout.
+            AFFECTED=$(echo "$RAW_AFFECTED" | grep -E '^\[.*\]$' | tail -n1)
+            AFFECTED="${AFFECTED:-[]}"
             echo "Affected projects: $AFFECTED"
 
             if echo "$AFFECTED" | jq -e 'index("auth") != null' > /dev/null; then
