@@ -151,7 +151,7 @@ export function ProjectForm({
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium">Current goal</p>
                 <p className="text-sm text-muted-foreground">
-                  {(currentGoal ?? 0).toLocaleString()}
+                  {(currentGoal ? currentGoal / 100 : 0).toLocaleString()}
                 </p>
               </div>
             </>
