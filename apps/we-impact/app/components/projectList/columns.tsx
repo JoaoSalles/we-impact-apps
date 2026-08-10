@@ -30,7 +30,7 @@ export const projectColumns: ColumnDef<Project>[] = [
     cell: ({ row }) => {
       const { currentGoal, goal } = row.original;
       const target = goal === null ? "—" : goal.toLocaleString();
-      return `${currentGoal.toLocaleString()} / ${target}`;
+      return `${(currentGoal !== null ? currentGoal / 100 : 0).toLocaleString()} / ${target}`;
     },
   },
   {
