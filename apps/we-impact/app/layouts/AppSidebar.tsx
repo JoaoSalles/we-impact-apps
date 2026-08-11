@@ -1,4 +1,4 @@
-import { BriefcaseBusiness, Home, Info, LogOut } from 'lucide-react';
+import { BriefcaseBusiness, HandCoins, Home, Info, LogOut } from 'lucide-react';
 import { Link, useLocation } from 'react-router';
 import {
   Sidebar,
@@ -15,6 +15,7 @@ import { useSession } from '@/auth/session-context';
 const navItems = [
   { name: 'Home', url: '/', icon: Home },
   { name: 'Institutions', url: '/institutions', icon: Info },
+  { name: 'Supporters', url: '/supporters', icon: HandCoins },
 ]
 
 function UserAvatar({ name }: { name: string }) {
