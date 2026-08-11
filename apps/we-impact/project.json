@@ -1,6 +1,7 @@
 {
   "name": "@we-impact/we-impact",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
   "// targets": "Targets are inferred by Nx plugins; only overrides live here.",
   "targets": {
     "dev": {
