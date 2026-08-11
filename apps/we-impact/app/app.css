@@ -14,50 +14,62 @@
 :root {
   color-scheme: light dark;
 
-  /* ---- Surfaces & text ---- */
-  --background: light-dark(#ffffff, #1c1c1c);
-  --foreground: light-dark(#08060d, #f3f4f6);
-  --bg-base: light-dark(#ffffff, #111111); /* page behind surfaces */
-  --popover: light-dark(#ffffff, #1c1c1c);
-  --popover-foreground: light-dark(#08060d, #f3f4f6);
-  --muted: light-dark(#f4f3ec, #1f2028);
-  --muted-foreground: light-dark(#6b6375, #9ca3af);
+  /* ---- Brand palette (extracted from weimpact.global) ---- */
+  --brand-navy: #0f172a;
+  --brand-navy-light: #1e293b;
+  --brand-teal: #0d9488;
+  --brand-teal-light: #14b8a6; /* dark-mode teal, kept legible on navy */
+  --brand-amber: #f59e0b;
+  --brand-warm-white: #fafaf9;
 
-  /* ---- Primary (monochrome; flips light/dark for contrast) ---- */
-  --primary: light-dark(#1c1c1c, #f3f4f6);
-  --primary-foreground: light-dark(#ffffff, #1c1c1c);
+  /* ---- Surfaces & text ---- */
+  --background: light-dark(#ffffff, var(--brand-navy-light));
+  --foreground: light-dark(var(--brand-navy), var(--brand-warm-white));
+  --bg-base: light-dark(var(--brand-warm-white), var(--brand-navy)); /* page behind surfaces */
+  --popover: light-dark(#ffffff, var(--brand-navy-light));
+  --popover-foreground: light-dark(var(--brand-navy), var(--brand-warm-white));
+  --muted: light-dark(#f1f5f9, var(--brand-navy-light));
+  --muted-foreground: light-dark(#64748b, #94a3b8);
+
+  /* ---- Primary (brand teal) ---- */
+  --primary: light-dark(var(--brand-teal), var(--brand-teal-light));
+  --primary-foreground: #ffffff;
 
   /* ---- Secondary ---- */
-  --secondary: light-dark(#f4f3ec, #2e303a);
-  --secondary-foreground: light-dark(#08060d, #f3f4f6);
+  --secondary: light-dark(#f1f5f9, var(--brand-navy-light));
+  --secondary-foreground: light-dark(var(--brand-navy), var(--brand-warm-white));
+
+  /* ---- Secondary accent (brand amber; matches btn-amber on the landing page) ---- */
+  --secondary-accent: var(--brand-amber);
+  --secondary-accent-foreground: var(--brand-navy);
 
   /* ---- Accent (subtle hover surfaces) ---- */
-  --accent: light-dark(#f4f3ec, #2e303a);
-  --accent-foreground: light-dark(#08060d, #f3f4f6);
-  --accent-custom: light-dark(rgba(28, 28, 28, 0.06), rgba(255, 255, 255, 0.08));
-  --accent-custom-foreground: light-dark(#08060d, #f3f4f6);
+  --accent: light-dark(#f1f5f9, var(--brand-navy-light));
+  --accent-foreground: light-dark(var(--brand-navy), var(--brand-warm-white));
+  --accent-custom: light-dark(rgba(13, 148, 136, 0.08), rgba(20, 184, 166, 0.12));
+  --accent-custom-foreground: light-dark(var(--brand-navy), var(--brand-warm-white));
 
   /* ---- Destructive ---- */
   --destructive: light-dark(#dc2626, #ef4444);
   --destructive-foreground: #ffffff;
 
   /* ---- Lines, inputs, focus ---- */
-  --border: light-dark(#e5e4e7, #2e303a);
-  --input: light-dark(#e5e4e7, #2e303a);
-  --ring: light-dark(#1c1c1c, #f3f4f6);
+  --border: light-dark(#e2e8f0, #334155);
+  --input: light-dark(#e2e8f0, #334155);
+  --ring: light-dark(var(--brand-teal), var(--brand-teal-light));
 
   /* ---- Inverse selection (active nav item) ---- */
-  --background-selected: light-dark(#1c1c1c, #ffffff);
+  --background-selected: light-dark(var(--brand-navy), var(--brand-warm-white));
 
   /* ---- Sidebar ---- */
-  --sidebar: light-dark(#ffffff, #18181b);
-  --sidebar-foreground: light-dark(#08060d, #f4f4f5);
-  --sidebar-primary: light-dark(#1c1c1c, #ffffff);
-  --sidebar-primary-foreground: light-dark(#ffffff, #08060d);
-  --sidebar-accent: light-dark(rgba(28, 28, 28, 0.05), #26262b);
-  --sidebar-accent-foreground: light-dark(#08060d, #f4f4f5);
-  --sidebar-border: light-dark(#e5e4e7, #26262b);
-  --sidebar-ring: light-dark(#1c1c1c, #f4f4f5);
+  --sidebar: light-dark(#ffffff, var(--brand-navy));
+  --sidebar-foreground: light-dark(var(--brand-navy), #f1f5f9);
+  --sidebar-primary: light-dark(var(--brand-navy), var(--brand-warm-white));
+  --sidebar-primary-foreground: light-dark(#ffffff, var(--brand-navy));
+  --sidebar-accent: light-dark(rgba(13, 148, 136, 0.08), rgba(20, 184, 166, 0.12));
+  --sidebar-accent-foreground: light-dark(var(--brand-navy), #f1f5f9);
+  --sidebar-border: light-dark(#e2e8f0, var(--brand-navy-light));
+  --sidebar-ring: light-dark(var(--brand-teal), var(--brand-teal-light));
 
   /* ---- Aliases kept for direct var() use in components ---- */
   --text: var(--muted-foreground); /* AppSidebar.tsx */
@@ -101,6 +113,8 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-accent: var(--secondary-accent);
+  --color-secondary-accent-foreground: var(--secondary-accent-foreground);
 
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
