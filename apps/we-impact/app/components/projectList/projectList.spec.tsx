@@ -58,7 +58,7 @@ describe("ProjectList", () => {
 
     expect(await screen.findByText("Clean Water")).toBeTruthy();
     expect(screen.getByText("Active")).toBeTruthy();
-    expect(screen.getByText("250 / 1,000")).toBeTruthy();
+    expect(screen.getByText("2.5 / 1,000")).toBeTruthy();
   });
 
   it("renders the inactive badge and a dash when goal is null", async () => {
@@ -68,7 +68,7 @@ describe("ProjectList", () => {
     renderList();
 
     expect(await screen.findByText("Inactive")).toBeTruthy();
-    expect(screen.getByText("250 / —")).toBeTruthy();
+    expect(screen.getByText("2.5 / —")).toBeTruthy();
   });
 
   it("clicking Next fetches the following page", async () => {
