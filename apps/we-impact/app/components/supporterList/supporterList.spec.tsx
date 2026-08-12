@@ -83,4 +83,13 @@ describe("SupporterList", () => {
 
     expect(await screen.findByText("network down")).toBeTruthy();
   });
+
+  it("links each row to its supporter view page", async () => {
+    mockedList.mockResolvedValue(page());
+    renderList();
+
+    await screen.findByText("Acme Corp");
+    const link = screen.getByRole("link", { name: /manage supporter/i });
+    expect(link.getAttribute("href")).toBe("/supporters/1");
+  });
 });
