@@ -2,7 +2,8 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Link } from "react-router";
 import { Eye } from "lucide-react";
 
-import type { Supporter } from "@/api/supporter-api";
+import type { Campaign } from "@/api/supporter-api";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -11,15 +12,17 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export const supporterColumns: ColumnDef<Supporter>[] = [
+export const campaignColumns: ColumnDef<Campaign>[] = [
   { accessorKey: "name", header: "Name" },
-  { accessorKey: "document", header: "Document" },
-  { accessorKey: "website", header: "Website" },
   {
-    accessorKey: "createdAt",
-    header: "Created at",
-    cell: ({ getValue }) =>
-      new Date(getValue<string>()).toLocaleDateString(),
+    id: "status",
+    header: "Status",
+    cell: ({ row }) =>
+      row.original.status ? (
+        <Badge>Active</Badge>
+      ) : (
+        <Badge variant="secondary">Inactive</Badge>
+      ),
   },
   {
     id: "actions",
@@ -29,13 +32,17 @@ export const supporterColumns: ColumnDef<Supporter>[] = [
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button asChild variant="ghost" size="icon" aria-label="Manage supporter">
-                <Link to={`/supporters/${row.original.id}`}>
+              <Button asChild variant="ghost" size="icon" aria-label="View campaign">
+                <Link
+                  to={`/supporters/${row.original.supporterId}/campaigns/${row.original.id}`}
+                >
                   <Eye />
                 </Link>
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Manage supporter</TooltipContent>
+            <TooltipContent>
+              <p>View Campaign</p>
+            </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </div>

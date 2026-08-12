@@ -85,6 +85,33 @@ export interface UpdateProjectValues {
   extraContent?: Record<string, string>;
 }
 
+/** A project returned by the global project search, with denormalized institution info. */
+export interface ProjectSearchResult {
+  id: string;
+  title: string;
+  goal: number | null;
+  description: string | null;
+  currentGoal: number;
+  institutionId: string;
+  institutionName: string;
+  institutionState: string | null;
+}
+
+export interface ProjectSearchResultPage {
+  items: ProjectSearchResult[];
+  pageNumber: number;
+  pageSize: number;
+  hasNext: boolean;
+}
+
+/** Filters/pagination for `searchProjects`. */
+export interface SearchProjectsParams {
+  pageSize?: number;
+  pageNumber?: number;
+  title?: string;
+  state?: string;
+}
+
 const registerURL = () => import.meta.env.VITE_REGISTER_API ?? '';
 
 /**
@@ -239,4 +266,30 @@ export async function updateProject(
   if (!response.ok) {
     throw new Error(`updateProject failed: ${response.status}`);
   }
+}
+
+/**
+ * Search projects across all institutions by title and/or state. Used to
+ * pick a project to associate with a campaign.
+ */
+export async function searchProjects(
+  params: SearchProjectsParams = {},
+): Promise<ProjectSearchResultPage> {
+  const { pageSize = 20, pageNumber = 0, title, state } = params;
+
+  const query = new URLSearchParams({
+    pageSize: String(pageSize),
+    pageNumber: String(pageNumber),
+  });
+  if (title?.trim()) query.set('title', title.trim());
+  if (state?.trim()) query.set('state', state.trim());
+
+  const response = await apiFetch(`${registerURL()}/projects?${query}`, {
+    method: 'GET',
+    credentials: 'include',
+  });
+  if (!response.ok) {
+    throw new Error(`searchProjects failed: ${response.status}`);
+  }
+  return (await response.json()) as ProjectSearchResultPage;
 }

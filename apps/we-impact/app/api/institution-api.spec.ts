@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { createProject, getInstitution, getProject, listInstitutions, updateInstitution, updateProject } from "./institution-api";
+import { createProject, getInstitution, getProject, listInstitutions, searchProjects, updateInstitution, updateProject } from "./institution-api";
 import { apiFetch } from "./api";
 
 vi.mock("./api", () => ({
@@ -233,5 +233,43 @@ describe("updateProject", () => {
     mockedFetch.mockResolvedValue({ ok: false, status: 400 } as Response);
 
     await expect(updateProject("abc", "p1", { title: "X" })).rejects.toThrow("400");
+  });
+});
+
+describe("searchProjects", () => {
+  afterEach(() => vi.clearAllMocks());
+
+  it("applies default pageSize=20 and pageNumber=0 and omits empty title/state", async () => {
+    mockedFetch.mockResolvedValue(okResponse());
+
+    await searchProjects();
+
+    const url = calledUrl();
+    expect(url.pathname.endsWith("/projects")).toBe(true);
+    expect(url.searchParams.get("pageSize")).toBe("20");
+    expect(url.searchParams.get("pageNumber")).toBe("0");
+    expect(url.searchParams.has("title")).toBe(false);
+    expect(url.searchParams.has("state")).toBe(false);
+    expect(mockedFetch.mock.calls[0][1]).toMatchObject({
+      method: "GET",
+      credentials: "include",
+    });
+  });
+
+  it("includes trimmed title and state filters when provided", async () => {
+    mockedFetch.mockResolvedValue(okResponse());
+
+    await searchProjects({ title: "  Clean Water  ", state: "SP", pageNumber: 1 });
+
+    const url = calledUrl();
+    expect(url.searchParams.get("title")).toBe("Clean Water");
+    expect(url.searchParams.get("state")).toBe("SP");
+    expect(url.searchParams.get("pageNumber")).toBe("1");
+  });
+
+  it("throws when the response is not ok", async () => {
+    mockedFetch.mockResolvedValue({ ok: false, status: 500 } as Response);
+
+    await expect(searchProjects()).rejects.toThrow("500");
   });
 });
